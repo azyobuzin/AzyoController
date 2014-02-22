@@ -38,13 +38,13 @@ namespace RemoteControlAdapter
                 switch (e)
                 {
                     case ControlType.Power:
-                        _viewModel.PowerCommand.Execute(null);
+                        _viewModel.PowerCommand.Execute();
                         break;
                     case ControlType.VolueUp:
-                        _viewModel.VolumeUpCommand.Execute(null);
+                        _viewModel.VolumeUpCommand.Execute();
                         break;
                     case ControlType.VolumeDown:
-                        _viewModel.VolumeDownCommand.Execute(null);
+                        _viewModel.VolumeDownCommand.Execute();
                         break;
 
                     case ControlType.Chanel1:
@@ -68,7 +68,7 @@ namespace RemoteControlAdapter
                 }
             };
             //COMポートリストを再取得
-            _viewModel.ResetPortListCommand.Execute(null);
+            _viewModel.ResetPortListCommand.Execute();
             
         }
 
@@ -87,7 +87,7 @@ namespace RemoteControlAdapter
 
         private void btnPortUpdate_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.ResetPortListCommand.Execute(null);
+            _viewModel.ResetPortListCommand.Execute();
         }
 
         private void btnConnectArduino_Click(object sender, RoutedEventArgs e)
@@ -97,7 +97,7 @@ namespace RemoteControlAdapter
 
         private void btnCall_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.CallMobileCommand.Execute(null);
+            _viewModel.CallMobileCommand.Execute();
         }
 
         

@@ -1,5 +1,5 @@
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Livet;
+using Livet.Commands;
 using RemoteControlAdapter.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace RemoteControlAdapter.ViewModel
 {
 
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : Livet.ViewModel
     {
 
         #region Command
@@ -21,47 +21,47 @@ namespace RemoteControlAdapter.ViewModel
         /// ソケットのリスナーを開始
         /// これを実行するとWPからの通信待機状態に入る
         /// </summary>
-        public RelayCommand<string> BeginListenCommand { get; set; }
+        public ListenerCommand<string> BeginListenCommand { get; set; }
         /// <summary>
         /// ソケットのリスナーを終了
         /// </summary>
-        public RelayCommand EndListenCommand { get; set; }
+        public ViewModelCommand EndListenCommand { get; set; }
         /// <summary>
         /// シリアル通信のコネクションされたArduinoにTVチャンネル変更信号を送る
         /// </summary>
-        public RelayCommand<ControlType> ChangeChannelCommand { get; set; }
+        public ListenerCommand<ControlType> ChangeChannelCommand { get; set; }
         /// <summary>
         /// シリアル通信のコネクションされたArduinoに音量アップ信号を送る
         /// </summary>
-        public RelayCommand VolumeUpCommand { get; set; }
+        public ViewModelCommand VolumeUpCommand { get; set; }
         /// <summary>
         /// シリアル通信のコネクションされたArduinoに音量ダウン信号を送る
         /// </summary>
-        public RelayCommand VolumeDownCommand { get; set; }
+        public ViewModelCommand VolumeDownCommand { get; set; }
         /// <summary>
         /// シリアル通信のコネクションされたArduinoにTV電源信号を送る
         /// </summary>
-        public RelayCommand PowerCommand { get; set; }
+        public ViewModelCommand PowerCommand { get; set; }
         /// <summary>
         /// シリアル通信のためのCOMポートリストを取得する
         /// </summary>
-        public RelayCommand ResetPortListCommand { get; set; }
+        public ViewModelCommand ResetPortListCommand { get; set; }
         /// <summary>
         /// Arduinoとシリアル通信を始める
         /// </summary>
-        public RelayCommand<string> ConnectArduino { get; set; }
+        public ListenerCommand<string> ConnectArduino { get; set; }
         /// <summary>
         /// Arduinoとのシリアル通信を終了する
         /// </summary>
-        public RelayCommand DisConnectArduino { get; set; }
+        public ViewModelCommand DisConnectArduino { get; set; }
         /// <summary>
         /// リモコンをなくした時のためにWPに向かって音楽を鳴らすように信号を送る(未実装)
         /// </summary>
-        public RelayCommand CallMobileCommand { get; set; }
+        public ViewModelCommand CallMobileCommand { get; set; }
         /// <summary>
         /// WPに推薦番組情報を送信する
         /// </summary>
-        public RelayCommand SuggestMobileCommand { get; set; }
+        public ViewModelCommand SuggestMobileCommand { get; set; }
 
         #endregion
 
@@ -102,16 +102,16 @@ namespace RemoteControlAdapter.ViewModel
 
         public MainViewModel()
         {
-            
+
             CommandInitialize();
-            
-            
+
+
 
             ClientList = new ObservableCollection<SocketClient>();
 
             PortList = new ObservableCollection<string>();
-            
-            
+
+
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace RemoteControlAdapter.ViewModel
         /// </summary>
         private void CommandInitialize()
         {
-            BeginListenCommand = new RelayCommand<string>(async(ip) =>
+            BeginListenCommand = new ListenerCommand<string>(async (ip) =>
             {
                 //自身のIPと指定ポート番号でリスナー初期化
                 Socket = new SocketListener(ip, 5000);
@@ -142,13 +142,13 @@ namespace RemoteControlAdapter.ViewModel
                         switch ((ControlType)remoteData.ControlData)
                         {
                             case ControlType.Power:
-                                PowerCommand.Execute(null);
+                                PowerCommand.Execute();
                                 break;
                             case ControlType.VolueUp:
-                                VolumeUpCommand.Execute(null);
+                                VolumeUpCommand.Execute();
                                 break;
                             case ControlType.VolumeDown:
-                                VolumeDownCommand.Execute(null);
+                                VolumeDownCommand.Execute();
                                 break;
 
                             case ControlType.Chanel1:
@@ -183,27 +183,27 @@ namespace RemoteControlAdapter.ViewModel
                 await Socket.ListenAsync();
             });
 
-            
 
-            EndListenCommand = new RelayCommand(() =>
+
+            EndListenCommand = new ViewModelCommand(() =>
             {
                 //ソケットの切断
                 Socket.DisConnect();
             });
 
-            ChangeChannelCommand = new RelayCommand<ControlType>(channel =>
+            ChangeChannelCommand = new ListenerCommand<ControlType>(channel =>
             {
                 //Arduinoのシリアルポートに書き込み
                 _serialPort.WriteLine(channel.ToString());
             });
 
-            PowerCommand = new RelayCommand(() =>
+            PowerCommand = new ViewModelCommand(() =>
             {
                 //Arduinoのシリアルポートに書き込み
                 WriteSerialPort(((int)ControlType.Power).ToString());
             });
 
-            ResetPortListCommand = new RelayCommand(() =>
+            ResetPortListCommand = new ViewModelCommand(() =>
             {
                 //接続可能COMポートのリストを初期化
                 PortList.Clear();
@@ -212,41 +212,41 @@ namespace RemoteControlAdapter.ViewModel
                 {
                     PortList.Add(n);
                 }
-                
+
             });
 
-            ConnectArduino = new RelayCommand<string>((port) =>
+            ConnectArduino = new ListenerCommand<string>((port) =>
             {
                 //Arduinoのシリアルポートをオープン
-                _serialPort = new SerialPort(port,9600);
+                _serialPort = new SerialPort(port, 9600);
                 _serialPort.Open();
             });
 
-            DisConnectArduino = new RelayCommand(() =>
+            DisConnectArduino = new ViewModelCommand(() =>
             {
                 //Arduinoのシリアルポートをクローズ
                 _serialPort.Close();
             });
 
-            VolumeUpCommand = new RelayCommand(() =>
+            VolumeUpCommand = new ViewModelCommand(() =>
             {
                 //Arduinoのシリアルポートに書き込み
                 WriteSerialPort(((int)ControlType.VolueUp).ToString());
             });
 
-            VolumeDownCommand = new RelayCommand(() =>
+            VolumeDownCommand = new ViewModelCommand(() =>
             {
                 //Arduinoのシリアルポートに書き込み
                 WriteSerialPort(((int)ControlType.VolumeDown).ToString());
             });
 
-            CallMobileCommand = new RelayCommand(async() =>
+            CallMobileCommand = new ViewModelCommand(async () =>
             {
                 //現在ソケット通信でコール情報を送信しているが
                 //WP側が取りにこないと受信できないのでプッシュにしたいなぁ
                 MobileRemoteData data = new MobileRemoteData()
                 {
-                    ControlType=MobileControlType.Call
+                    ControlType = MobileControlType.Call
                 };
                 string str = await JsonConvert.SerializeObjectAsync(data);
                 foreach (var client in ClientList)
@@ -255,16 +255,16 @@ namespace RemoteControlAdapter.ViewModel
                 }
             });
 
-            SuggestMobileCommand = new RelayCommand(()=>
+            SuggestMobileCommand = new ViewModelCommand(() =>
             {
                 //未実装！！！
             });
-            
+
         }
 
         private void WriteSerialPort(string str)
         {
-            if (_serialPort!=null&&_serialPort.IsOpen)
+            if (_serialPort != null && _serialPort.IsOpen)
             {
                 _serialPort.WriteLine(str);
             }

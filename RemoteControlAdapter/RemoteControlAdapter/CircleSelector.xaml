@@ -18,181 +18,181 @@
         <SolidColorBrush x:Key="Brush8" Color="#FF90D2FF"/>
         <SolidColorBrush x:Key="Brush9" Color="#FF88B0C9"/>
         <Storyboard x:Key="archStoryboard" RepeatBehavior="Forever">
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="archLeft">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="180"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:4" Value="-180"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="archRight">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:4" Value="360"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(ed:Arc.EndAngle)" Storyboard.TargetName="archLeft">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="160"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:4" Value="160"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(ed:Arc.EndAngle)" Storyboard.TargetName="archRight">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="200"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:4" Value="200"/>
-        	</DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="archLeft">
+                <EasingDoubleKeyFrame KeyTime="0" Value="180"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="-180"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="archRight">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="360"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(ed:Arc.EndAngle)" Storyboard.TargetName="archLeft">
+                <EasingDoubleKeyFrame KeyTime="0" Value="160"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="160"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(ed:Arc.EndAngle)" Storyboard.TargetName="archRight">
+                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="200"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </UserControl.Resources>
-	<UserControl.Triggers>
-		<EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-	</UserControl.Triggers>
-	<Grid x:Name="gridRoot">
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup x:Name="VisualStateGroup">
-				<VisualStateGroup.Transitions>
-					<VisualTransition GeneratedDuration="0:0:0.01"/>
-				</VisualStateGroup.Transitions>
-				<VisualState x:Name="CenterPush">
-					<Storyboard>
-						<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="btnCenter">
-							<EasingDoubleKeyFrame KeyTime="0" Value="280"/>
-						</DoubleAnimationUsingKeyFrames>
-						<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Height)" Storyboard.TargetName="btnCenter">
-							<EasingDoubleKeyFrame KeyTime="0" Value="280"/>
-						</DoubleAnimationUsingKeyFrames>
-					</Storyboard>
-				</VisualState>
-				<VisualState x:Name="CenterPop"/>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
-		<Grid x:Name="gridSelector" TouchMove="gridSelector_TouchMove" MouseMove="gridSelector_MouseMove">
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush1}" HorizontalAlignment="Center" Height="500" Margin="100,101,100,99" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0"/>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush2}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="40"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush3}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="80"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush4}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="120"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush5}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="160"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush6}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="200"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush7}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="240"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush8}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="280"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush9}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
-				<ed:Arc.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="320"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</ed:Arc.RenderTransform>
-			</ed:Arc>
-			<Grid x:Name="gridArraw" HorizontalAlignment="Center" Height="630" VerticalAlignment="Center" Width="630" RenderTransformOrigin="0.5,0.5">
-				<Grid.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="{Binding PointDegree}"/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</Grid.RenderTransform>
-				<Rectangle Fill="White" HorizontalAlignment="Center" Height="120" Margin="0" Stroke="#FFCFCFCF" StrokeThickness="2" VerticalAlignment="Top" Width="4"/>
-				<Ellipse Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="60" Margin="0" Stroke="#FFD6D6D6" StrokeThickness="2" VerticalAlignment="Top" Width="60"/>
-			</Grid>
-		</Grid>
-		<Ellipse x:Name="btnCenter" Fill="{Binding CenterBrush}" HorizontalAlignment="Center" Height="300" Margin="0" Stroke="Black" VerticalAlignment="Center" Width="300" StrokeThickness="0" TouchUp="btnCenter_TouchUp" MouseUp="btnCenter_MouseUp">
-			<i:Interaction.Triggers>
-				<i:EventTrigger EventName="TouchDown">
-					<ei:GoToStateAction StateName="CenterPush"/>
-				</i:EventTrigger>
-				<i:EventTrigger EventName="TouchUp">
-					<ei:GoToStateAction StateName="CenterPop"/>
-				</i:EventTrigger>
-			</i:Interaction.Triggers>
-		</Ellipse>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+    </UserControl.Triggers>
+    <Grid x:Name="gridRoot">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.01"/>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="CenterPush">
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="btnCenter">
+                            <EasingDoubleKeyFrame KeyTime="0" Value="280"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Height)" Storyboard.TargetName="btnCenter">
+                            <EasingDoubleKeyFrame KeyTime="0" Value="280"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="CenterPop"/>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="gridSelector" TouchMove="gridSelector_TouchMove" MouseMove="gridSelector_MouseMove">
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush1}" HorizontalAlignment="Center" Height="500" Margin="100,101,100,99" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0"/>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush2}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="40"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush3}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="80"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush4}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="120"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush5}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="160"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush6}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="200"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush7}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="240"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush8}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="280"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <ed:Arc ArcThickness="80" ArcThicknessUnit="Pixel" EndAngle="40" Fill="{DynamicResource Brush9}" HorizontalAlignment="Center" Height="500" Margin="100" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="500" StrokeThickness="0" RenderTransformOrigin="0.5,0.5">
+                <ed:Arc.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="320"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:Arc.RenderTransform>
+            </ed:Arc>
+            <Grid x:Name="gridArraw" HorizontalAlignment="Center" Height="630" VerticalAlignment="Center" Width="630" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="{Binding PointDegree}"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Rectangle Fill="White" HorizontalAlignment="Center" Height="120" Margin="0" Stroke="#FFCFCFCF" StrokeThickness="2" VerticalAlignment="Top" Width="4"/>
+                <Ellipse Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="60" Margin="0" Stroke="#FFD6D6D6" StrokeThickness="2" VerticalAlignment="Top" Width="60"/>
+            </Grid>
+        </Grid>
+        <Ellipse x:Name="btnCenter" Fill="{Binding CenterBrush}" HorizontalAlignment="Center" Height="300" Margin="0" Stroke="Black" VerticalAlignment="Center" Width="300" StrokeThickness="0" TouchUp="btnCenter_TouchUp" MouseUp="btnCenter_MouseUp">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TouchDown">
+                    <ei:GoToStateAction StateName="CenterPush"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="TouchUp">
+                    <ei:GoToStateAction StateName="CenterPop"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Ellipse>
 
-		<TextBlock Width="300" Height="120" Foreground="White" Text="{Binding CenterText}" TextAlignment="Center"  FontSize="96" FontFamily="Segoe UI Light" TouchUp="TextBlock_TouchUp" MouseUp="TextBlock_MouseUp" >
-			<i:Interaction.Triggers>
-				<i:EventTrigger EventName="TouchDown">
-					<ei:GoToStateAction StateName="CenterPush"/>
-				</i:EventTrigger>
-				<i:EventTrigger EventName="TouchUp">
-					<ei:GoToStateAction StateName="CenterPop"/>
-				</i:EventTrigger>
-			</i:Interaction.Triggers>
-		</TextBlock>
-		<ed:Arc x:Name="archLeft" ArcThickness="3" ArcThicknessUnit="Pixel" EndAngle="160" HorizontalAlignment="Center" Height="540" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="540" Fill="{DynamicResource Brush6}" StrokeThickness="0" Margin="114" RenderTransformOrigin="0.5,0.5" Opacity="0.4">
-			<ed:Arc.RenderTransform>
-				<TransformGroup>
-					<ScaleTransform/>
-					<SkewTransform/>
-					<RotateTransform Angle="180"/>
-					<TranslateTransform/>
-				</TransformGroup>
-			</ed:Arc.RenderTransform>
-		</ed:Arc>
-		<ed:Arc x:Name="archRight" ArcThickness="3" ArcThicknessUnit="Pixel" EndAngle="200" HorizontalAlignment="Center" Height="570" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="570" Fill="{DynamicResource Brush6}" StrokeThickness="0" Margin="99" RenderTransformOrigin="0.5,0.5" Opacity="0.4">
-			<ed:Arc.RenderTransform>
-				<TransformGroup>
-					<ScaleTransform/>
-					<SkewTransform/>
-					<RotateTransform/>
-					<TranslateTransform/>
-				</TransformGroup>
-			</ed:Arc.RenderTransform>
-		</ed:Arc>
-	</Grid>
+        <TextBlock Width="300" Height="120" Foreground="White" Text="{Binding CenterText}" TextAlignment="Center"  FontSize="96" FontFamily="Segoe UI Light" TouchUp="TextBlock_TouchUp" MouseUp="TextBlock_MouseUp" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TouchDown">
+                    <ei:GoToStateAction StateName="CenterPush"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="TouchUp">
+                    <ei:GoToStateAction StateName="CenterPop"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBlock>
+        <ed:Arc x:Name="archLeft" ArcThickness="3" ArcThicknessUnit="Pixel" EndAngle="160" HorizontalAlignment="Center" Height="540" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="540" Fill="{DynamicResource Brush6}" StrokeThickness="0" Margin="114" RenderTransformOrigin="0.5,0.5" Opacity="0.4">
+            <ed:Arc.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="180"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ed:Arc.RenderTransform>
+        </ed:Arc>
+        <ed:Arc x:Name="archRight" ArcThickness="3" ArcThicknessUnit="Pixel" EndAngle="200" HorizontalAlignment="Center" Height="570" Stretch="None" Stroke="Black" StartAngle="0" VerticalAlignment="Center" Width="570" Fill="{DynamicResource Brush6}" StrokeThickness="0" Margin="99" RenderTransformOrigin="0.5,0.5" Opacity="0.4">
+            <ed:Arc.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ed:Arc.RenderTransform>
+        </ed:Arc>
+    </Grid>
 </UserControl>

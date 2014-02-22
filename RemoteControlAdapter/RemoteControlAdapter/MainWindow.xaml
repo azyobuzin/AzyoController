@@ -15,6 +15,41 @@
         <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
         <Button x:Name="btnCall" Content="Call" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="75" Click="btnCall_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" d:DataContext="{d:DesignInstance {x:Type ViewModel:MainViewModel}}"/>
+        <Button x:Name="btnUsers" Content="アカウント" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnUsers_Click"/>
 
     </Grid>
+    
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="flyoutUsers" Header="アカウント" Position="Right" Width="350">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <ListBox Grid.Row="0" ItemsSource="{Binding Users}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ScreenName, StringFormat=@{0}}" Margin="5,10" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu>
+                                            <MenuItem Header="削除" Command="{Binding RemoveCommand}" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                    <Button Grid.Row="1" Content="アカウント追加" Padding="5,10" Command="{Binding AddUserCommand}" />
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
 </Controls:MetroWindow>

@@ -1,6 +1,9 @@
 using Livet;
 using Livet.Commands;
+using Livet.EventListeners;
+using Livet.Messaging;
 using RemoteControlAdapter.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,6 +13,7 @@ using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace RemoteControlAdapter.ViewModel
 {
@@ -63,6 +67,10 @@ namespace RemoteControlAdapter.ViewModel
         /// WPに推薦番組情報を送信する
         /// </summary>
         public ViewModelCommand SuggestMobileCommand { get; set; }
+        /// <summary>
+        /// アカウント追加を開始する
+        /// </summary>
+        public ViewModelCommand AddUserCommand { get; set; }
 
         #endregion
 
@@ -112,7 +120,14 @@ namespace RemoteControlAdapter.ViewModel
 
             PortList = new ObservableCollection<string>();
 
+            this.CompositeDisposable.Add(new PropertyChangedEventListener(Settings.Instance, (sender, e) =>
+            {
+                if (e.PropertyName == "Users")
+                    this.Users = ViewModelHelper.CreateReadOnlyDispatcherCollection(Settings.Instance.Users,
+                        u => new UserViewModel(u), DispatcherHelper.UIDispatcher);
+            }));
 
+            this.Users = ViewModelHelper.CreateReadOnlyDispatcherCollection(Settings.Instance.Users, u => new UserViewModel(u), DispatcherHelper.UIDispatcher);
         }
 
         /// <summary>
@@ -249,7 +264,7 @@ namespace RemoteControlAdapter.ViewModel
                 {
                     ControlType = MobileControlType.Call
                 };
-                string str = await JsonConvert.SerializeObjectAsync(data);
+                string str = await Task.Run(() => JsonConvert.SerializeObject(data));
                 foreach (var client in ClientList)
                 {
                     client.SendTextAsync(str);
@@ -259,6 +274,47 @@ namespace RemoteControlAdapter.ViewModel
             SuggestMobileCommand = new ViewModelCommand(() =>
             {
                 //未実装！！！
+            });
+
+            AddUserCommand = new ViewModelCommand(async () =>
+            {
+                var authorizer = new Authorizer();
+                var progress = await this.Messenger
+                    .GetResponse(new ResponsiveInteractionMessage<Task<ProgressDialogController>>("WaitingForGettingTokens"))
+                    .Response;
+                string uri;
+                try
+                {
+                    uri = await authorizer.GetRequestTokenAsync();
+                }
+                catch
+                {
+                    progress.CloseAsync()
+                        .ContinueWith(t => this.Messenger.Raise(new InteractionMessage("AuthorizationError")));
+                    return;
+                }
+                await progress.CloseAsync();
+
+                var pin = await this.Messenger
+                    .GetResponse(new GenericResponsiveInteractionMessage<string, Task<string>>(uri, "InputPin"))
+                    .Response;
+                if (!string.IsNullOrWhiteSpace(pin))
+                {
+                    progress = await this.Messenger
+                        .GetResponse(new ResponsiveInteractionMessage<Task<ProgressDialogController>>("WaitingForGettingTokens"))
+                        .Response;
+                    try
+                    {
+                        await authorizer.GetAccessTokenAsync(pin.Trim());
+                    }
+                    catch
+                    {
+                        progress.CloseAsync()
+                            .ContinueWith(t => this.Messenger.Raise(new InteractionMessage("AuthorizationError")));
+                        return;
+                    }
+                    progress.CloseAsync();
+                }
             });
 
         }
@@ -272,6 +328,22 @@ namespace RemoteControlAdapter.ViewModel
             else
             {
                 Debug.WriteLine("シリアルポートが開いてません");
+            }
+        }
+
+        private ReadOnlyDispatcherCollection<UserViewModel> users;
+        public ReadOnlyDispatcherCollection<UserViewModel> Users
+        {
+            get
+            {
+                return this.users;
+            }
+            set
+            {
+                if (this.users != value)
+                {
+                    this.users = value;
+                }
             }
         }
     }

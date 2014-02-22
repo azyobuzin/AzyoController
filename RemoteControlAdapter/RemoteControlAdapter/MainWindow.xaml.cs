@@ -16,6 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Livet.Messaging;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace RemoteControlAdapter
 {
@@ -25,6 +27,7 @@ namespace RemoteControlAdapter
     public partial class MainWindow
     {
         MainViewModel _viewModel;
+        MessageListener messageListener;
         public MainWindow()
         {
             InitializeComponent();
@@ -69,7 +72,28 @@ namespace RemoteControlAdapter
             };
             //COMポートリストを再取得
             _viewModel.ResetPortListCommand.Execute();
-            
+
+            messageListener = new MessageListener(_viewModel.Messenger)
+            {
+                {
+                    "WaitingForGettingTokens",
+                    m => (m as ResponsiveInteractionMessage<Task<ProgressDialogController>>).Response =
+                        this.ShowProgressAsync("アカウント追加", "認証中...")
+                },
+                {
+                    "InputPin",
+                    m =>
+                    {
+                        var grm = m as GenericResponsiveInteractionMessage<string, Task<string>>;
+                        Process.Start(grm.Value);
+                        grm.Response = this.ShowInputAsync("アカウント追加", "Twitter にログインし、ブラウザに表示された番号を入力してください。");
+                    }
+                },
+                {
+                    "AuthorizationError",
+                    m => this.ShowMessageAsync("アカウント追加", "Twitter にログインできませんでした。")
+                }
+            };
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -98,6 +122,11 @@ namespace RemoteControlAdapter
         private void btnCall_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.CallMobileCommand.Execute();
+        }
+
+        private void btnUsers_Click(object sender, RoutedEventArgs e)
+        {
+            flyoutUsers.IsOpen = true;
         }
 
     }

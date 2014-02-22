@@ -8,6 +8,7 @@ using System.IO.Ports;
 using System.Runtime.Serialization;
 using System.Net;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace RemoteControlAdapter.ViewModel
@@ -136,7 +137,7 @@ namespace RemoteControlAdapter.ViewModel
                     {
                         Debug.WriteLine("データ受信" + str);
                         //Remoteデータクラスにデシリアル化
-                        var remoteData = await JsonConvert.DeserializeObjectAsync<RemoteData>(str);
+                        var remoteData = await Task.Run(() => JsonConvert.DeserializeObject<RemoteData>(str));
 
                         //どのような信号か判別してコマンド実行
                         switch ((ControlType)remoteData.ControlData)

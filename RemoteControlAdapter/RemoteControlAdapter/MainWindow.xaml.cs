@@ -22,7 +22,7 @@ namespace RemoteControlAdapter
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         MainViewModel _viewModel;
         public MainWindow()
@@ -100,8 +100,5 @@ namespace RemoteControlAdapter
             _viewModel.CallMobileCommand.Execute();
         }
 
-        
-
-        
     }
 }

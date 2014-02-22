@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,6 +31,8 @@ namespace RemoteControlAdapter
             this._viewModel = new MainViewModel();
             this.DataContext = _viewModel;
 
+            //青いリングUIの真ん中のボタンがプッシュされたとき
+            //どのコマンドかがControlType型で送られてくる
             circleSelector.OnCenterButtonPressed += (s, e) =>
             {
                 switch (e)
@@ -64,15 +67,21 @@ namespace RemoteControlAdapter
                         break;
                 }
             };
-
+            //COMポートリストを再取得
             _viewModel.ResetPortListCommand.Execute(null);
-            _viewModel.BeginListenCommand.Execute(null);
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var address = Dns.GetHostAddresses(Dns.GetHostName());
+            SelectAddress window = new SelectAddress(address.Select(q=>q.ToString()).ToList());
+            window.Show();
+            window.OnSelectAddress += (add) =>
+            {
+                _viewModel.BeginListenCommand.Execute(add);
             
-            _viewModel.BeginListenCommand.Execute(null);
+            };
             
         }
 

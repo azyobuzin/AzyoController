@@ -16,7 +16,7 @@
         <SolidColorBrush x:Key="Brush6" Color="#FF0098FF"/>
         <SolidColorBrush x:Key="Brush7" Color="#FF53B9FF"/>
         <SolidColorBrush x:Key="Brush8" Color="#FF90D2FF"/>
-        <SolidColorBrush x:Key="Brush9" Color="#FFE0F3FF"/>
+        <SolidColorBrush x:Key="Brush9" Color="#FF88B0C9"/>
         <Storyboard x:Key="archStoryboard" RepeatBehavior="Forever">
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="archLeft">
         		<EasingDoubleKeyFrame KeyTime="0" Value="180"/>

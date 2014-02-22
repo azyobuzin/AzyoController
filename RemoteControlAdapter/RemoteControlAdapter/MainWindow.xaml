@@ -1,7 +1,7 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:RemoteControlAdapter" x:Class="RemoteControlAdapter.MainWindow"
+        xmlns:local="clr-namespace:RemoteControlAdapter" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModel="clr-namespace:RemoteControlAdapter.ViewModel" mc:Ignorable="d" x:Class="RemoteControlAdapter.MainWindow"
         Title="MainWindow" Height="835" Width="1000">
     <Grid Background="#00000000">
         <Button Content="接続待機" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
@@ -12,6 +12,7 @@
 
         <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
         <Button x:Name="btnCall" Content="Call" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="75" Click="btnCall_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" d:DataContext="{d:DesignInstance {x:Type ViewModel:MainViewModel}}"/>
 
     </Grid>
 </Window>

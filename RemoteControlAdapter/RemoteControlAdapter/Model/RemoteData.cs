@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RemoteControlAdapter.Model
 {
+    /// <summary>
+    /// WPからWPF側に来るデータ
+    /// </summary>
     [DataContract]
     public class RemoteData:INotifyPropertyChanged
     {

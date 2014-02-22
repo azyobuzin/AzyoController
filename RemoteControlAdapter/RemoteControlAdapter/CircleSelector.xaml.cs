@@ -20,7 +20,7 @@ using System.Windows.Shapes;
 namespace RemoteControlAdapter
 {
     /// <summary>
-    /// CircleSelector.xaml の相互作用ロジック
+    /// 青リングのUIユーザーコントロール
     /// </summary>
     public partial class CircleSelector : UserControl
     {

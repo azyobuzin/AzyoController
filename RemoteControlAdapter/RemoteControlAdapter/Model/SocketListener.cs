@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace RemoteControlAdapter.Model
 {
+    /// <summary>
+    /// ソケット通信で非同期データリッスンを行う
+    /// </summary>
     public class SocketListener : SocketBase
     {
 

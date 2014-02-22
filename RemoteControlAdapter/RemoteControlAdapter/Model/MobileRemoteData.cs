@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RemoteControlAdapter.Model
 {
+    /// <summary>
+    /// WPFからWPに送信するデータ
+    /// </summary>
     public class MobileRemoteData
     {
         public MobileControlType ControlType { get; set; }

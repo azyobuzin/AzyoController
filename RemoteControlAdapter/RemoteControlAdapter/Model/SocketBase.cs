@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace RemoteControlAdapter.Model
 {
-    public class SocketBase:INotifyPropertyChanged
+    /// <summary>
+    /// SocketListenerとSocketClientに派生するSocket通信の基底クラス
+    /// </summary>
+    public abstract class SocketBase:INotifyPropertyChanged
     {
         string _IpAddress;
 

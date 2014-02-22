@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RemoteControlAdapter.Model
 {
+    /// <summary>
+    /// ソケット通信で送受信を行うクラス
+    /// </summary>
     public class SocketClient:SocketBase
     {
 

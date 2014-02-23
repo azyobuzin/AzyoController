@@ -18,6 +18,7 @@ namespace RemoteControlAdapter.Model
 
         public const string ConsumerKey = "9zIZeOor17G0GiWS8ULMzg";
         public const string ConsumerSecret = "tHEMF1pDiqQWvrof7NtcRIi0yMT3WwpFRpNowtKRs";
+        public const string DatabaseName = "Data Source=database.db";
 
         private ObservableCollection<User> users;
         public ObservableCollection<User> Users

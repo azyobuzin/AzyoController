@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Livet;
 using RemoteControlAdapter.Model;
+using RemoteControlAdapter.Model.Tweets;
 
 namespace RemoteControlAdapter
 {

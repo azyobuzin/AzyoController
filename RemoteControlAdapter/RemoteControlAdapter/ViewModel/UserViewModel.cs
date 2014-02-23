@@ -29,6 +29,14 @@ namespace RemoteControlAdapter.ViewModel
             }
         }
 
+        public string ProfileImage
+        {
+            get
+            {
+                return this.Model.ProfileImage;
+            }
+        }
+
         public ViewModelCommand RemoveCommand { get; private set; }
     }
 }

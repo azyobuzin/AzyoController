@@ -1,41 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LinqToTwitter;
+using CoreTweet;
 
 namespace RemoteControlAdapter.Model
 {
     public class Authorizer
     {
-        private SingleUserAuthorizer authorizer = new SingleUserAuthorizer()
-        {
-            CredentialStore = new InMemoryCredentialStore()
-            {
-                ConsumerKey = Settings.ConsumerKey,
-                ConsumerSecret = Settings.ConsumerSecret
-            }
-        };
+        private OAuth.OAuthSession session;
 
-        public async Task<string> GetRequestTokenAsync()
+        public Task<Uri> GetRequestTokenAsync()
         {
-            await this.authorizer.GetRequestTokenAsync("oob");
-            return this.authorizer.PrepareAuthorizeUrl(false);
+            return Task.Run(() =>
+            {
+                this.session = OAuth.Authorize(Settings.ConsumerKey, Settings.ConsumerSecret);
+                return this.session.AuthorizeUri;
+            });
         }
 
-        public async Task GetAccessTokenAsync(string verifier)
+        public Task GetAccessTokenAsync(string verifier)
         {
-            await this.authorizer.GetAccessTokenAsync(new Dictionary<string, string>()
+            return Task.Run(() =>
             {
-                { "oauth_verifier", verifier }
+                var tokens = this.session.GetTokens(verifier);
+                var user = tokens.Account.VerifyCredentials();
+                if (Settings.Instance.Users.All(u => u.UserId != user.ID))
+                    Settings.Instance.Users.Add(new User()
+                    {
+                        OAuthToken = tokens.AccessToken,
+                        OAuthTokenSecret = tokens.AccessTokenSecret,
+                        UserId = user.ID.Value,
+                        ScreenName = user.ScreenName,
+                        ProfileImage = user.ProfileImageUrlHttps.ToString()
+                    });
             });
-            if (!Settings.Instance.Users.Any(u => u.UserId == this.authorizer.CredentialStore.UserID))
-                Settings.Instance.Users.Add(new User()
-                {
-                    OAuthToken = this.authorizer.CredentialStore.OAuthToken,
-                    OAuthTokenSecret = this.authorizer.CredentialStore.OAuthTokenSecret,
-                    UserId = this.authorizer.CredentialStore.UserID,
-                    ScreenName = this.authorizer.CredentialStore.ScreenName
-                });
         }
     }
 }

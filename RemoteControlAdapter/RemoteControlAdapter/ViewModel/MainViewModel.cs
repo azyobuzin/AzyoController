@@ -282,7 +282,7 @@ namespace RemoteControlAdapter.ViewModel
                 var progress = await this.Messenger
                     .GetResponse(new ResponsiveInteractionMessage<Task<ProgressDialogController>>("WaitingForGettingTokens"))
                     .Response;
-                string uri;
+                Uri uri;
                 try
                 {
                     uri = await authorizer.GetRequestTokenAsync();
@@ -296,7 +296,7 @@ namespace RemoteControlAdapter.ViewModel
                 await progress.CloseAsync();
 
                 var pin = await this.Messenger
-                    .GetResponse(new GenericResponsiveInteractionMessage<string, Task<string>>(uri, "InputPin"))
+                    .GetResponse(new GenericResponsiveInteractionMessage<Uri, Task<string>>(uri, "InputPin"))
                     .Response;
                 if (!string.IsNullOrWhiteSpace(pin))
                 {

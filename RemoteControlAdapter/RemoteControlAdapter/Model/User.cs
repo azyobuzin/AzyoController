@@ -39,8 +39,8 @@ namespace RemoteControlAdapter.Model
             }
         }
 
-        private ulong userId;
-        public ulong UserId
+        private long userId;
+        public long UserId
         {
             get
             {
@@ -68,6 +68,23 @@ namespace RemoteControlAdapter.Model
                 if (this.screenName != value)
                 {
                     this.screenName = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string profileImage;
+        public string ProfileImage
+        {
+            get
+            {
+                return this.profileImage;
+            }
+            set
+            {
+                if (this.profileImage != value)
+                {
+                    this.profileImage = value;
                     this.RaisePropertyChanged();
                 }
             }

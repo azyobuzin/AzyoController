@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using LinqToTwitter;
+using System.Diagnostics;
+using System.Linq;
+using System.Reactive.Linq;
+using CoreTweet;
+using CoreTweet.Streaming;
+using CoreTweet.Streaming.Reactive;
 
 namespace RemoteControlAdapter.Model
 {
@@ -49,39 +50,32 @@ namespace RemoteControlAdapter.Model
         private static void StartFilterStream()
         {
             if (IsRunning || users.Count == 0) return;
-            Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    var user = users.OrderBy(_ => Guid.NewGuid()).First();
-                    IsRunning = true;
-                    await new TwitterContext(new SingleUserAuthorizer()
+            var user = users.OrderBy(_ => Guid.NewGuid()).First();
+            Debug.WriteLine("Connecting filter stream with @" + user.ScreenName);
+            IsRunning = true;
+            Tokens.Create(Settings.ConsumerKey, Settings.ConsumerSecret, user.OAuthToken, user.OAuthTokenSecret).Streaming
+                .StartObservableStream(StreamingType.Filter, new StreamingParameters(track => string.Join(",", SearchHashtags)))
+                .OfType<StatusMessage>()
+                .Subscribe(
+                    m =>
                     {
-                        CredentialStore = new InMemoryCredentialStore()
-                        {
-                            ConsumerKey = Settings.ConsumerKey,
-                            ConsumerSecret = Settings.ConsumerSecret,
-                            OAuthToken = user.OAuthToken,
-                            OAuthTokenSecret = user.OAuthTokenSecret
-                        }
-                    }).Streaming
-                    .Where(s => s.Type == StreamingType.Filter && s.Track == string.Join(",", SearchHashtags))
-                    .StartAsync(s => Task.Run(() =>
+                        var status = m.Status;
+                        Debug.WriteLine("@{0}: {1}", status.User.ScreenName, status.Text);
+                        //TODO
+                    },
+                    ex =>
                     {
-                        var j = LitJson.JsonMapper.ToObject(s.Content);
-                        LitJson.JsonData _;
-                        if (j.TryGetValue("text", out _))
-                        {
-                            var status = new Status(j);
-                            ReceivedTweets.Add(status);
-                            System.Diagnostics.Debug.WriteLine("@{0}: {1}", status.User.ScreenNameResponse, status.Text);
-                        }
-                    }));
-                }
-                catch { }
-                IsRunning = false;
-                StartFilterStream();
-            }, TaskCreationOptions.LongRunning);
+                        Debug.WriteLine("Filter srteam: " + ex.ToString());
+                        IsRunning = false;
+                        StartFilterStream();
+                    },
+                    () =>
+                    {
+                        Debug.WriteLine("Filter stream completed");
+                        IsRunning = false;
+                        StartFilterStream();
+                    }
+                );
         }
     }
 }

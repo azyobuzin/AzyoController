@@ -31,7 +31,10 @@
                     <ListBox Grid.Row="0" ItemsSource="{Binding Users}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ScreenName, StringFormat=@{0}}" Margin="5,10" />
+                                <StackPanel Margin="5" Orientation="Horizontal">
+                                    <Image Source="{Binding ProfileImage}" Width="48" Height="48" />
+                                    <TextBlock Text="{Binding ScreenName, StringFormat=@{0}}" VerticalAlignment="Center" Margin="6,0,0,0" />
+                                </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <ListBox.ItemContainerStyle>

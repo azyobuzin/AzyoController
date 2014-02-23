@@ -84,8 +84,8 @@ namespace RemoteControlAdapter
                     "InputPin",
                     m =>
                     {
-                        var grm = m as GenericResponsiveInteractionMessage<string, Task<string>>;
-                        Process.Start(grm.Value);
+                        var grm = m as GenericResponsiveInteractionMessage<Uri, Task<string>>;
+                        Process.Start(grm.Value.ToString());
                         grm.Response = this.ShowInputAsync("アカウント追加", "Twitter にログインし、ブラウザに表示された番号を入力してください。");
                     }
                 },

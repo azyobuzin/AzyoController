@@ -97,6 +97,7 @@
     <Compile Include="Model\SocketListener.cs" />
     <Compile Include="Model\RemoteData.cs" />
     <Compile Include="Model\Time.cs" />
+    <Compile Include="Model\TweetReceiver.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="SelectAddress.xaml.cs">
       <DependentUpon>SelectAddress.xaml</DependentUpon>

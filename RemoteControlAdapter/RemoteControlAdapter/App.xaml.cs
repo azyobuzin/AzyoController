@@ -17,6 +17,7 @@ namespace RemoteControlAdapter
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             DispatcherHelper.UIDispatcher = this.Dispatcher;
+            TweetReceiver.Initialize();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

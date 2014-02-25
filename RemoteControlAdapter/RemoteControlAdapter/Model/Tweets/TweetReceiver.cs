@@ -4,12 +4,13 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using CoreTweet;
 using CoreTweet.Streaming;
 using CoreTweet.Streaming.Reactive;
-using System.Threading.Tasks;
-using RemoteControlAdapter.Model.Databases;
+using Livet;
+using Newtonsoft.Json.Linq;
 
 namespace RemoteControlAdapter.Model.Tweets
 {
@@ -19,11 +20,11 @@ namespace RemoteControlAdapter.Model.Tweets
 
         private static Timer userTimelineTimer;
 
-        public static ObservableCollection<Status> FilteredTweets { get; private set; }
+        public static ObservableSynchronizedCollection<Status> FilteredTweets { get; private set; }
 
         static TweetReceiver()
         {
-            FilteredTweets = new ObservableCollection<Status>();
+            FilteredTweets = new ObservableSynchronizedCollection<Status>();
         }
         
         public static void Initialize()
@@ -37,15 +38,19 @@ namespace RemoteControlAdapter.Model.Tweets
                     users = Settings.Instance.Users;
                     users.CollectionChanged += users_CollectionChanged;
                     StartFilterStream();
+                    GetUserTimelines();
                 }
             };
             users = Settings.Instance.Users;
             users.CollectionChanged += users_CollectionChanged;
             StartFilterStream();
+            
             userTimelineTimer = new Timer(2 * 60 * 1000);
             userTimelineTimer.Elapsed += (sender, e) => GetUserTimelines();
             userTimelineTimer.Start();
             GetUserTimelines();
+
+            Search();
         }
 
         private static ObservableCollection<User> users;
@@ -100,45 +105,48 @@ namespace RemoteControlAdapter.Model.Tweets
                     var timeline = await Task.Run(() =>
                         Tokens.Create(Settings.ConsumerKey, Settings.ConsumerSecret, user.OAuthToken, user.OAuthTokenSecret)
                             .Statuses.UserTimeline(id => user.UserId, count => 200)
+                            .Where(s => !ReceivedUserTweets.ContainsTweet(s.ID))
+                            .ToArray()
                     );
-                    using (var exec = await Database.Connect())
+                    foreach (var status in timeline)
                     {
-                        foreach (var status in timeline)
-                        {
-                            if (await Task.Run(() => !exec.ExecuteReader("select * from MyTweets where Id = @ID", status).Any()))
-                            {
-                                await Task.Run(() => exec.Insert("MyTweets", Tweet.FromStatus(status)));
-                                foreach (var t in await TweetAnalyzer.Analyze(status))
-                                {
-                                    await Task.Run(() =>
-                                    {
-                                        var word = exec.Select<WordCount>(
-                                            "select * from Words where UserId = @Item1 and Word = @Item2",
-                                            Tuple.Create(user.UserId, t.Item2)
-                                        ).FirstOrDefault();
-                                        if (word == null)
-                                            exec.Insert("Words", new WordCount()
-                                            {
-                                                UserId = user.UserId,
-                                                Word = t.Item1,
-                                                Count = t.Item2
-                                            });
-                                        else
-                                            exec.Update("Words",
-                                                new { Count = word.Count + t.Item2 },
-                                                new { UserId = word.UserId, Word = word.Word }
-                                            );
-                                    });
-                                }
-                            }
-                        }
-                        await Task.Run(() => exec.TransactionComplete());
+                        await ReceivedUserTweets.AddTweet(status);
+                        foreach (var t in await TweetAnalyzer.Analyze(status))
+                            await ReceivedUserTweets.IncrementWordCount(user.UserId, t.Item1, t.Item2);
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(user.ScreenName + "'s timeline error: " + ex.ToString());
                 }
+            }
+        }
+
+        private static async void Search()
+        {
+            Debug.WriteLine("Searching");
+            try
+            {
+                using (var client = OAuth2.CreateOAuth2Client(await OAuth2.GetBearerToken()))
+                {
+                    var json = await client.GetStringAsync("https://api.twitter.com/1.1/search/tweets.json?result_type=recent&count=100&q="
+                        + Uri.EscapeDataString(string.Join(" OR ", SearchHashtags)));
+                    await Task.Run(() =>
+                    {
+                        var statuses = JObject.Parse(json)["statuses"]
+                            .Select(j => j.ToObject<Status>())
+                            .Where(s => FilteredTweets.All(x => s.ID != x.ID));
+                        foreach (var status in statuses)
+                        {
+                            FilteredTweets.Add(status);
+                            Debug.WriteLine("@{0}: {1}", status.User.ScreenName, status.Text);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Serach error: " + ex.ToString());
             }
         }
     }

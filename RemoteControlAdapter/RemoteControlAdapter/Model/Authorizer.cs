@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreTweet;
@@ -26,6 +25,7 @@ namespace RemoteControlAdapter.Model
                 var tokens = this.session.GetTokens(verifier);
                 var user = tokens.Account.VerifyCredentials();
                 if (Settings.Instance.Users.All(u => u.UserId != user.ID))
+                {
                     Settings.Instance.Users.Add(new User()
                     {
                         OAuthToken = tokens.AccessToken,
@@ -34,6 +34,8 @@ namespace RemoteControlAdapter.Model
                         ScreenName = user.ScreenName,
                         ProfileImage = user.ProfileImageUrlHttps.ToString()
                     });
+                    Settings.Instance.Save();
+                }
             });
         }
     }

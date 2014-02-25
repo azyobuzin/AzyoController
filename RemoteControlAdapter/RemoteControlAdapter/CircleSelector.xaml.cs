@@ -26,16 +26,37 @@ namespace RemoteControlAdapter
     {
         public event Action<object,ControlType> OnCenterButtonPressed;
         CircleSelectorViewModel _viewModel;
+
+        private bool isSuggest;
+
+        public bool IsSuggest
+        {
+            get { 
+                
+                 return isSuggest; }
+            set {
+                if (value)
+                {
+                    VisualStateManager.GoToState(this, "SuggestMode", true);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "NormalMode", true);
+                }
+                isSuggest = value;  }
+        }
+
         public CircleSelector()
         {
             InitializeComponent();
             _viewModel = new CircleSelectorViewModel();
-            
+            isSuggest = false;
             DataContext = _viewModel;
 
             OnCenterButtonPressed += (s,e) =>
             {
             };
+            VisualStateManager.GoToState(this, "NormalMode", true);
         }
 
         
@@ -71,6 +92,7 @@ namespace RemoteControlAdapter
             {
                 deg = 360 - deg;
             }
+           
             _viewModel.PointDegree = deg;
             if (deg >= 0 && deg < 40)
             {
@@ -165,7 +187,11 @@ namespace RemoteControlAdapter
             OnCenterButtonPressed(this, (ControlType)_viewModel.State);
         }
 
-        
+        public void PlaySuggestAnimation()
+        {
+            var story = Resources["suggestStoryboard"] as Storyboard;
+            story.Begin();
+        }
     }
 
     public class CircleSelectorViewModel:INotifyPropertyChanged
@@ -203,12 +229,12 @@ namespace RemoteControlAdapter
         public CircleSelectorViewModel()
         {
             _pointDegree = 0;
-            CenterBrush = new SolidColorBrush(Colors.Blue);
+            CenterBrush = new SolidColorBrush(Colors.DeepSkyBlue);
             CenterText = "";
             State = 0;
         }
 
-
+        
 
 
         public event PropertyChangedEventHandler PropertyChanged;

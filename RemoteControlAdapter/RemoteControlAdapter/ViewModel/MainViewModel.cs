@@ -109,6 +109,8 @@ namespace RemoteControlAdapter.ViewModel
             set { _portList = value; }
         }
 
+        public event Action OnSuggest;
+
         public MainViewModel()
         {
 
@@ -119,6 +121,8 @@ namespace RemoteControlAdapter.ViewModel
             ClientList = new ObservableCollection<SocketClient>();
 
             PortList = new ObservableCollection<string>();
+            OnSuggest += () => { };
+
 
             this.CompositeDisposable.Add(new PropertyChangedEventListener(Settings.Instance, (sender, e) =>
             {
@@ -135,7 +139,7 @@ namespace RemoteControlAdapter.ViewModel
         /// </summary>
         private void CommandInitialize()
         {
-            BeginListenCommand = new ListenerCommand<string>(async (ip) =>
+            BeginListenCommand = new ListenerCommand<string>(async ip =>
             {
                 //自身のIPと指定ポート番号でリスナー初期化
                 Socket = new SocketListener(ip, 5000);
@@ -164,7 +168,8 @@ namespace RemoteControlAdapter.ViewModel
                                 VolumeUpCommand.Execute();
                                 break;
                             case ControlType.VolumeDown:
-                                VolumeDownCommand.Execute();
+                                OnSuggest();
+                                //VolumeDownCommand.Execute();
                                 break;
 
                             case ControlType.Chanel1:
@@ -201,6 +206,7 @@ namespace RemoteControlAdapter.ViewModel
 
 
 
+
             EndListenCommand = new ViewModelCommand(() =>
             {
                 //ソケットの切断
@@ -210,7 +216,7 @@ namespace RemoteControlAdapter.ViewModel
             ChangeChannelCommand = new ListenerCommand<ControlType>(channel =>
             {
                 //Arduinoのシリアルポートに書き込み
-                _serialPort.WriteLine(channel.ToString());
+                _serialPort.WriteLine(((int)channel).ToString());
             });
 
             PowerCommand = new ViewModelCommand(() =>
@@ -231,7 +237,7 @@ namespace RemoteControlAdapter.ViewModel
 
             });
 
-            ConnectArduino = new ListenerCommand<string>((port) =>
+            ConnectArduino = new ListenerCommand<string>(port =>
             {
                 //Arduinoのシリアルポートをオープン
                 _serialPort = new SerialPort(port, 9600);

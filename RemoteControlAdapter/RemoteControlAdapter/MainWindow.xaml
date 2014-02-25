@@ -2,17 +2,25 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:RemoteControlAdapter" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModel="clr-namespace:RemoteControlAdapter.ViewModel" mc:Ignorable="d" x:Class="RemoteControlAdapter.MainWindow"
-        Title="MainWindow" Height="835" Width="1000">
+        Title="MainWindow" Height="835" Width="1000" WindowState="Maximized" ShowInTaskbar="False" WindowStyle="None">
+	<Window.Resources>
+		
+	</Window.Resources>
+	
     <Grid Background="#00000000">
-        <Button Content="接続待機" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="114,9,0,0" VerticalAlignment="Top" Width="87"/>
-        <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="213,10,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
-        <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="275,10,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
+        <CheckBox x:Name="check" IsChecked="False" Checked="check_Checked" Click="check_Click"></CheckBox>
+        <Grid x:Name="gridMenu" Visibility="Visible">
+        <Button Content="接続待機" HorizontalAlignment="Left" Margin="34,15,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="121,15,0,0" VerticalAlignment="Top" Width="87"/>
+        <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="237,15,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
+        <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="299,17,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
+            <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" d:DataContext="{d:DesignInstance {x:Type ViewModel:MainViewModel}}"/>
+            <Button x:Name="btnclose" Content="Close" HorizontalAlignment="Left" Margin="378,18,0,0" VerticalAlignment="Top" Width="75" Click="btnclose_Click"/>
 
+        </Grid>
 
         <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
-        <Button x:Name="btnCall" Content="Call" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="75" Click="btnCall_Click"/>
-        <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" d:DataContext="{d:DesignInstance {x:Type ViewModel:MainViewModel}}"/>
+        
 
     </Grid>
 </Window>

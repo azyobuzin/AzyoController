@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -67,6 +68,16 @@ namespace RemoteControlAdapter
                         break;
                 }
             };
+
+            _viewModel.OnSuggest += () =>
+            {
+                SpeechSynthesizer ss = new SpeechSynthesizer();
+                var info = ss.GetInstalledVoices().Where(q => q.VoiceInfo.Culture.LCID == 1033).Select(q => q).Single();
+                ss.SelectVoice(info.VoiceInfo.Name);
+                ss.Rate = -2;
+                ss.SpeakAsync("Privilege Suggest you Television, NHK");
+                circleSelector.IsSuggest = true;
+            };
             //COMポートリストを再取得
             _viewModel.ResetPortListCommand.Execute(null);
             
@@ -87,7 +98,10 @@ namespace RemoteControlAdapter
 
         private void btnPortUpdate_Click(object sender, RoutedEventArgs e)
         {
+
+            
             _viewModel.ResetPortListCommand.Execute(null);
+            
         }
 
         private void btnConnectArduino_Click(object sender, RoutedEventArgs e)
@@ -98,6 +112,28 @@ namespace RemoteControlAdapter
         private void btnCall_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.CallMobileCommand.Execute(null);
+        }
+
+        private void check_Checked(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void check_Click(object sender, RoutedEventArgs e)
+        {
+            if (check.IsChecked.Value == true)
+            {
+                gridMenu.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                gridMenu.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void btnclose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         

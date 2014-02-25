@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Net;
 using System.Linq;
 using Newtonsoft.Json;
+using System;
 
 namespace RemoteControlAdapter.ViewModel
 {
@@ -100,6 +101,8 @@ namespace RemoteControlAdapter.ViewModel
             set { _portList = value; }
         }
 
+        public event Action OnSuggest;
+
         public MainViewModel()
         {
             
@@ -110,7 +113,7 @@ namespace RemoteControlAdapter.ViewModel
             ClientList = new ObservableCollection<SocketClient>();
 
             PortList = new ObservableCollection<string>();
-            
+            OnSuggest += () => { };
             
         }
 
@@ -148,7 +151,8 @@ namespace RemoteControlAdapter.ViewModel
                                 VolumeUpCommand.Execute(null);
                                 break;
                             case ControlType.VolumeDown:
-                                VolumeDownCommand.Execute(null);
+                                OnSuggest();
+                                //VolumeDownCommand.Execute(null);
                                 break;
 
                             case ControlType.Chanel1:
@@ -194,7 +198,7 @@ namespace RemoteControlAdapter.ViewModel
             ChangeChannelCommand = new RelayCommand<ControlType>(channel =>
             {
                 //Arduinoのシリアルポートに書き込み
-                _serialPort.WriteLine(channel.ToString());
+                _serialPort.WriteLine(((int)channel).ToString());
             });
 
             PowerCommand = new RelayCommand(() =>

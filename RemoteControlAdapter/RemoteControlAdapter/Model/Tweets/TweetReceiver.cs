@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -29,20 +28,7 @@ namespace RemoteControlAdapter.Model.Tweets
         
         public static void Initialize()
         {
-            Settings.Instance.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName == "Users")
-                {
-                    if (users != null)
-                        users.CollectionChanged -= users_CollectionChanged;
-                    users = Settings.Instance.Users;
-                    users.CollectionChanged += users_CollectionChanged;
-                    StartFilterStream();
-                    GetUserTimelines();
-                }
-            };
-            users = Settings.Instance.Users;
-            users.CollectionChanged += users_CollectionChanged;
+            Settings.Instance.Users.CollectionChanged += users_CollectionChanged;
             StartFilterStream();
             
             userTimelineTimer = new Timer(2 * 60 * 1000);
@@ -52,9 +38,7 @@ namespace RemoteControlAdapter.Model.Tweets
 
             Search();
         }
-
-        private static ObservableCollection<User> users;
-
+        
         public static bool IsRunning { get; private set; }
 
         private static void users_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -65,8 +49,8 @@ namespace RemoteControlAdapter.Model.Tweets
 
         private static void StartFilterStream()
         {
-            if (IsRunning || users.Count == 0) return;
-            var user = users.OrderBy(_ => Guid.NewGuid()).First();
+            if (IsRunning || Settings.Instance.Users.Count == 0) return;
+            var user = Settings.Instance.Users.OrderBy(_ => Guid.NewGuid()).First();
             Debug.WriteLine("Connecting filter stream with @" + user.ScreenName);
             IsRunning = true;
             Tokens.Create(Settings.ConsumerKey, Settings.ConsumerSecret, user.OAuthToken, user.OAuthTokenSecret).Streaming

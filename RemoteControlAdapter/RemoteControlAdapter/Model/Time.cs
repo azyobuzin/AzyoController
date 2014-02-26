@@ -1,21 +1,83 @@
 ﻿using System;
+using Livet;
 
 namespace RemoteControlAdapter.Model
 {
-    public struct Time
+    public class Time : NotificationObject
     {
-        public Time(int hour, int minute, int second) : this()
+        public Time() { }
+
+        public Time(int hour, int minute, int second)
         {
             this.Hour = hour;
             this.Minute = minute;
             this.Second = second;
         }
 
-        public int Hour { get; set; }
-        public int Minute { get; set; }
-        public int Second { get; set; }
+        private int hour;
+        public int Hour
+        {
+            get
+            {
+                return this.hour;
+            }
+            set
+            {
+                if (value < 0 || 24 <= value) throw new ArgumentException();
 
-        public static readonly Time Zero = new Time(0, 0, 0);
+                if (this.hour != value)
+                {
+                    this.hour = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int minute;
+        public int Minute
+        {
+            get
+            {
+                return this.minute;
+            }
+            set
+            {
+                if (value < 0 || 60 <= value) throw new ArgumentException();
+
+                if (this.minute != value)
+                {
+                    this.minute = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int second;
+        public int Second
+        {
+            get
+            {
+                return this.second;
+            }
+            set
+            {
+                if (value < 0 || 60 <= value) throw new ArgumentException();
+
+                if (this.second != value)
+                {
+                    this.second = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public static Time Zero
+        {
+            get
+            {
+                return new Time(0, 0, 0);
+            }
+        }
 
         public override bool Equals(object obj)
         {

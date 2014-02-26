@@ -11,7 +11,7 @@ namespace RemoteControlAdapter.Model.Tweets
         private static ConcurrentBag<long> tweetIds = new ConcurrentBag<long>();
         private static ConcurrentBag<WordCount> words = new ConcurrentBag<WordCount>();
 
-        public static async Task LoadFromDatabase()
+        public static async void LoadFromDatabase()
         {
             using (var exec = await Database.Connect())
             {

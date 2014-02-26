@@ -1,10 +1,16 @@
-﻿using Livet;
+﻿using System.Collections.ObjectModel;
+using Livet;
 using Newtonsoft.Json;
 
 namespace RemoteControlAdapter.Model
 {
     public class User : NotificationObject
     {
+        public User()
+        {
+            this.AvailableTimes = new ObservableCollection<UserAvailableTime>();
+        }
+
         private string oauthToken;
         public string OAuthToken
         {
@@ -90,39 +96,7 @@ namespace RemoteControlAdapter.Model
             }
         }
 
-        private Time startTime;
-        public Time StartTime
-        {
-            get
-            {
-                return this.startTime;
-            }
-            set
-            {
-                if (this.startTime != value)
-                {
-                    this.startTime = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        private Time endTime;
-        public Time EndTime
-        {
-            get
-            {
-                return this.endTime;
-            }
-            set
-            {
-                if (this.endTime != value)
-                {
-                    this.endTime = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
+        public ObservableCollection<UserAvailableTime> AvailableTimes { get; private set; }
 
         private SocketClient client;
         [JsonIgnore]
@@ -137,6 +111,43 @@ namespace RemoteControlAdapter.Model
                 if (this.client != value)
                 {
                     this.client = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+    }
+
+    public class UserAvailableTime : NotificationObject
+    {
+        private Time start = Time.Zero;
+        public Time Start
+        {
+            get
+            {
+                return this.start;
+            }
+            set
+            {
+                if (this.start != value)
+                {
+                    this.start = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private Time end = Time.Zero;
+        public Time End
+        {
+            get
+            {
+                return this.end;
+            }
+            set
+            {
+                if (this.end != value)
+                {
+                    this.end = value;
                     this.RaisePropertyChanged();
                 }
             }

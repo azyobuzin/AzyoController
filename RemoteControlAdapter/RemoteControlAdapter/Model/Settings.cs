@@ -20,22 +20,7 @@ namespace RemoteControlAdapter.Model
         public const string ConsumerSecret = "tHEMF1pDiqQWvrof7NtcRIi0yMT3WwpFRpNowtKRs";
         public const string DatabaseName = "Data Source=database.db";
 
-        private ObservableCollection<User> users;
-        public ObservableCollection<User> Users
-        {
-            get
-            {
-                return this.users;
-            }
-            set
-            {
-                if (this.users != value)
-                {
-                    this.users = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
+        public ObservableCollection<User> Users { get; private set; }
 
         private static Settings instance;
         public static Settings Instance

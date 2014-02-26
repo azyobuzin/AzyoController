@@ -157,9 +157,16 @@ namespace RemoteControlAdapter
             }
         }
 
-        private void btnclose_Click(object sender, RoutedEventArgs e)
+        private void User_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.Close();
+            this.flyoutUserSetting.DataContext = (sender as ListBoxItem).DataContext;
+            this.flyoutUserSetting.IsOpen = true;
+        }
+
+        private void btnRemoveAccount_Click(object sender, RoutedEventArgs e)
+        {
+            this.flyoutUserSetting.IsOpen = false;
+            Settings.Instance.Save();
         }
 
     }

@@ -47,21 +47,22 @@ namespace RemoteControlAdapter.Model
         {
             await Task.Run(() =>
             {
-                try{
-                while (true)
+                try
                 {
-                    if (_connectionEndFlag == true)
+                    while (true)
                     {
-                        _connectionEndFlag = false;
-                        OnDisConnection();
-                        break;
+                        if (_connectionEndFlag == true)
+                        {
+                            _connectionEndFlag = false;
+                            OnDisConnection();
+                            break;
+                        }
+                        _socket.Listen(MaxConnectionCount);
+                        var connection = _socket.Accept();
+                        OnAccepted(connection);
                     }
-                    _socket.Listen(MaxConnectionCount);
-                    var connection = _socket.Accept();
-                    OnAccepted(connection);
                 }
-                }
-                catch (Exception e)
+                catch
                 {
                     OnDisConnection();
                 }

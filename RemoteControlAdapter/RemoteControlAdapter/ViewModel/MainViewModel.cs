@@ -152,45 +152,58 @@ namespace RemoteControlAdapter.ViewModel
                     //受信待機(非同期)
                     client.ReceiveTextAsync();
                     //データがきたら
-                    client.ReceiveCompleted += async (str) =>
+                    client.ReceiveCompleted += str =>
                     {
                         Debug.WriteLine("データ受信" + str);
                         //Remoteデータクラスにデシリアル化
-                        var remoteData = await Task.Run(() => JsonConvert.DeserializeObject<RemoteData>(str));
+                        var remoteData = JsonConvert.DeserializeObject<RemoteData>(str);
 
-                        //どのような信号か判別してコマンド実行
-                        switch ((ControlType)remoteData.ControlData)
+                        var user = Settings.Instance.Users.FirstOrDefault(u => u.ScreenName == remoteData.Name);
+                        if (user != null && user.AvailableTimes.Any(t => Time.IsInTimeSpan(DateTime.Now, t.Start, t.End)))
                         {
-                            case ControlType.Power:
-                                PowerCommand.Execute();
-                                break;
-                            case ControlType.VolueUp:
-                                VolumeUpCommand.Execute();
-                                break;
-                            case ControlType.VolumeDown:
-                                OnSuggest();
-                                //VolumeDownCommand.Execute();
-                                break;
+                            //どのような信号か判別してコマンド実行
+                            switch ((ControlType)remoteData.ControlData)
+                            {
+                                case ControlType.Power:
+                                    PowerCommand.Execute();
+                                    break;
+                                case ControlType.VolueUp:
+                                    VolumeUpCommand.Execute();
+                                    break;
+                                case ControlType.VolumeDown:
+                                    OnSuggest();
+                                    //VolumeDownCommand.Execute();
+                                    break;
 
-                            case ControlType.Chanel1:
-                                ChangeChannelCommand.Execute(ControlType.Chanel1);
-                                break;
-                            case ControlType.Chanel4:
-                                ChangeChannelCommand.Execute(ControlType.Chanel4);
-                                break;
-                            case ControlType.Chanel5:
-                                ChangeChannelCommand.Execute(ControlType.Chanel5);
-                                break;
-                            case ControlType.Chanel6:
-                                ChangeChannelCommand.Execute(ControlType.Chanel6);
-                                break;
-                            case ControlType.Chanel8:
-                                ChangeChannelCommand.Execute(ControlType.Chanel8);
-                                break;
-                            case ControlType.Chanel10:
-                                ChangeChannelCommand.Execute(ControlType.Chanel10);
-                                break;
+                                case ControlType.Chanel1:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel1);
+                                    break;
+                                case ControlType.Chanel4:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel4);
+                                    break;
+                                case ControlType.Chanel5:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel5);
+                                    break;
+                                case ControlType.Chanel6:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel6);
+                                    break;
+                                case ControlType.Chanel8:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel8);
+                                    break;
+                                case ControlType.Chanel10:
+                                    ChangeChannelCommand.Execute(ControlType.Chanel10);
+                                    break;
+                            }
                         }
+                        else
+                        {
+                            MobileRemoteData data = new MobileRemoteData()
+                            {
+                                ControlType = MobileControlType.Reject
+                            };
+                            client.SendTextAsync(JsonConvert.SerializeObject(data));
+                        }
+
                         //再度受信開始
                         client.ReceiveTextAsync();
 
@@ -262,7 +275,7 @@ namespace RemoteControlAdapter.ViewModel
                 WriteSerialPort(((int)ControlType.VolumeDown).ToString());
             });
 
-            CallMobileCommand = new ViewModelCommand(async () =>
+            CallMobileCommand = new ViewModelCommand(() =>
             {
                 //現在ソケット通信でコール情報を送信しているが
                 //WP側が取りにこないと受信できないのでプッシュにしたいなぁ
@@ -270,7 +283,7 @@ namespace RemoteControlAdapter.ViewModel
                 {
                     ControlType = MobileControlType.Call
                 };
-                string str = await Task.Run(() => JsonConvert.SerializeObject(data));
+                string str = JsonConvert.SerializeObject(data);
                 foreach (var client in ClientList)
                 {
                     client.SendTextAsync(str);

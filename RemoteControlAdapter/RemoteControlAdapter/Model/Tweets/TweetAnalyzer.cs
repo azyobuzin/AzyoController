@@ -28,11 +28,14 @@ namespace RemoteControlAdapter.Model.Tweets
                         text = text.Replace(entity.Url.ToString(), "");
             }
 
-            return (await ParseText(text)).Concat(
-                status.Entities.HashTags
-                    .GroupBy(entity => entity.Text.ToLower())
-                    .Select(g => Tuple.Create("#" + g.Key, g.Count()))
-            ).ToArray();
+            return (await ParseText(text))
+                .Where(t => !t.Item1.All(c => "0123456789０１２３４５６７８９".Contains(c)))
+                .Concat(
+                    status.Entities.HashTags
+                        .GroupBy(entity => entity.Text.ToLower())
+                        .Select(g => Tuple.Create("#" + g.Key, g.Count()))
+                )
+                .ToArray();
         }
 
         private static async Task<Tuple<string, int>[]> ParseText(string str)

@@ -169,5 +169,13 @@ namespace RemoteControlAdapter
             Settings.Instance.Save();
         }
 
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            //間違えて通常状態になってしまったときにフルスクリーンに戻せるように
+            this.ResizeMode = this.WindowState == WindowState.Normal
+                ? ResizeMode.CanResize
+                : ResizeMode.CanMinimize;
+        }
+
     }
 }

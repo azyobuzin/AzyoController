@@ -1,4 +1,5 @@
-﻿using Livet;
+﻿using System.Linq;
+using Livet;
 using Livet.Commands;
 using Livet.EventListeners;
 using RemoteControlAdapter.Model;
@@ -13,8 +14,8 @@ namespace RemoteControlAdapter.ViewModel
 
             this.CompositeDisposable.Add(new PropertyChangedEventListener(this.Model, (sender, e) =>
             {
-                if (e.PropertyName == "ScreenName")
-                    this.RaisePropertyChanged(() => this.ScreenName);
+                if (new[] { "ScreenName", "ProfileImage", "SuggestedChannel", "IsVoiceSuggest" }.Contains(e.PropertyName))
+                    this.RaisePropertyChanged(e.PropertyName);
             }));
 
             this.AvailableTimes = ViewModelHelper.CreateReadOnlyDispatcherCollection(
@@ -43,6 +44,28 @@ namespace RemoteControlAdapter.ViewModel
         }
 
         public ReadOnlyDispatcherCollection<UserAvailableTime> AvailableTimes { get; private set; }
+
+        public string SuggestedChannel
+        {
+            get
+            {
+                return this.Model.SuggestedChannel != null
+                    ? string.Format("{0} {1}", this.Model.SuggestedChannel.Number, this.Model.SuggestedChannel.Name)
+                    : "おすすめを特定できませんでした。おすすめは時間帯やTwitterの利用状況に左右されます。";
+            }
+        }
+
+        public bool IsVoiceSuggest
+        {
+            get
+            {
+                return this.Model.IsVoiceSuggest;
+            }
+            set
+            {
+                this.Model.IsVoiceSuggest = value;
+            }
+        }
 
         public ViewModelCommand RemoveCommand { get; private set; }
 

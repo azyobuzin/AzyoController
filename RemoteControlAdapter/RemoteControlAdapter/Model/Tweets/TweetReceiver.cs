@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -8,22 +9,19 @@ using System.Timers;
 using CoreTweet;
 using CoreTweet.Streaming;
 using CoreTweet.Streaming.Reactive;
-using Livet;
 using Newtonsoft.Json.Linq;
 
 namespace RemoteControlAdapter.Model.Tweets
 {
     public static class TweetReceiver
     {
-        public static readonly string[] SearchHashtags = new[] { "#nhk", "#mbs", "#kbs", "#abc", "#ktv", "#ytv" };
-
         private static Timer userTimelineTimer;
 
-        public static ObservableSynchronizedCollection<Status> FilteredTweets { get; private set; }
+        public static ConcurrentBag<Status> FilteredTweets { get; private set; }
 
         static TweetReceiver()
         {
-            FilteredTweets = new ObservableSynchronizedCollection<Status>();
+            FilteredTweets = new ConcurrentBag<Status>();
         }
         
         public static void Initialize()
@@ -54,7 +52,8 @@ namespace RemoteControlAdapter.Model.Tweets
             Debug.WriteLine("Connecting filter stream with @" + user.ScreenName);
             IsRunning = true;
             Tokens.Create(Settings.ConsumerKey, Settings.ConsumerSecret, user.OAuthToken, user.OAuthTokenSecret).Streaming
-                .StartObservableStream(StreamingType.Filter, new StreamingParameters(track => string.Join(",", SearchHashtags)))
+                .StartObservableStream(StreamingType.Filter,
+                    new StreamingParameters(track => string.Join(",", Settings.Channels.Select(c => c.Hashtag))))
                 .OfType<StatusMessage>()
                 .Subscribe(
                     m =>
@@ -62,7 +61,6 @@ namespace RemoteControlAdapter.Model.Tweets
                         var status = m.Status;
                         Debug.WriteLine("@{0}: {1}", status.User.ScreenName, status.Text);
                         FilteredTweets.Add(status);
-                        //TODO: マッチング
                     },
                     ex =>
                     {
@@ -113,8 +111,8 @@ namespace RemoteControlAdapter.Model.Tweets
             {
                 using (var client = OAuth2.CreateOAuth2Client(await OAuth2.GetBearerToken()))
                 {
-                    var json = await client.GetStringAsync("https://api.twitter.com/1.1/search/tweets.json?result_type=recent&count=100&q="
-                        + Uri.EscapeDataString(string.Join(" OR ", SearchHashtags)));
+                    var json = await client.GetStringAsync("https://api.twitter.com/1.1/search/tweets.json?result_type=recent&count=100&lang=ja&q="
+                        + Uri.EscapeDataString(string.Join(" OR ", Settings.Channels.Select(c => c.Hashtag))));
                     await Task.Run(() =>
                     {
                         var statuses = JObject.Parse(json)["statuses"]

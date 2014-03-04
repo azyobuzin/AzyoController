@@ -98,19 +98,36 @@ namespace RemoteControlAdapter.Model
 
         public ObservableCollection<UserAvailableTime> AvailableTimes { get; private set; }
 
-        private SocketClient client;
-        [JsonIgnore]
-        public SocketClient Client
+        private bool isVoiceSuggest = true;
+        public bool IsVoiceSuggest
         {
             get
             {
-                return this.client;
+                return this.isVoiceSuggest;
             }
             set
             {
-                if (this.client != value)
+                if (this.isVoiceSuggest != value)
                 {
-                    this.client = value;
+                    this.isVoiceSuggest = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private Channel suggestedChannel;
+        [JsonIgnore]
+        public Channel SuggestedChannel
+        {
+            get
+            {
+                return this.suggestedChannel;
+            }
+            set
+            {
+                if (this.suggestedChannel != value)
+                {
+                    this.suggestedChannel = value;
                     this.RaisePropertyChanged();
                 }
             }
@@ -119,7 +136,7 @@ namespace RemoteControlAdapter.Model
 
     public class UserAvailableTime : NotificationObject
     {
-        private Time start = Time.Zero;
+        private Time start = new Time();
         public Time Start
         {
             get
@@ -136,7 +153,7 @@ namespace RemoteControlAdapter.Model
             }
         }
 
-        private Time end = Time.Zero;
+        private Time end = new Time();
         public Time End
         {
             get

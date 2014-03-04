@@ -171,10 +171,8 @@ namespace RemoteControlAdapter.ViewModel
                                     VolumeUpCommand.Execute();
                                     break;
                                 case ControlType.VolumeDown:
-                                    OnSuggest();
-                                    //VolumeDownCommand.Execute();
+                                    VolumeDownCommand.Execute();
                                     break;
-
                                 case ControlType.Chanel1:
                                     ChangeChannelCommand.Execute(ControlType.Chanel1);
                                     break;
@@ -289,12 +287,7 @@ namespace RemoteControlAdapter.ViewModel
                     client.SendTextAsync(str);
                 }
             });
-
-            SuggestMobileCommand = new ViewModelCommand(() =>
-            {
-                //–¢ŽÀ‘•III
-            });
-
+            
             AddUserCommand = new ViewModelCommand(async () =>
             {
                 var authorizer = new Authorizer();

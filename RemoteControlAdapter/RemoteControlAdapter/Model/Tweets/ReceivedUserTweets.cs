@@ -68,13 +68,9 @@ namespace RemoteControlAdapter.Model.Tweets
             }
         }
 
-        public static Task<WordCount[]> GetWordList(long userId)
+        public static WordCount[] GetWordList(long userId)
         {
-            return Task.Run(() =>
-                 words.Where(w => w.UserId == userId)
-                    .OrderByDescending(w => w.Count)
-                    .ToArray()
-            );
+            return words.Where(w => w.UserId == userId).ToArray();
         }
     }
 }

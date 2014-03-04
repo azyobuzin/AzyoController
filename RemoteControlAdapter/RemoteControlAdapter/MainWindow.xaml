@@ -4,24 +4,62 @@
         xmlns:local="clr-namespace:RemoteControlAdapter" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModel="clr-namespace:RemoteControlAdapter.ViewModel" mc:Ignorable="d" x:Class="RemoteControlAdapter.MainWindow"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="MainWindow" Height="835" Width="1000"
-        WindowState="Maximized" ResizeMode="CanMinimize">
-	<Window.Resources>
-		
-	</Window.Resources>
-    <Grid Background="#00000000">
-        <CheckBox x:Name="check" IsChecked="False" Checked="check_Checked" Click="check_Click"></CheckBox>
-        <Grid x:Name="gridMenu" Visibility="Visible">
-            <Button Content="接続待機" HorizontalAlignment="Left" Margin="34,15,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-            <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="121,15,0,0" VerticalAlignment="Top" Width="87"/>
-            <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="237,15,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
-            <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="299,15,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
-            <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" />
-        </Grid>
-
-        <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
+        WindowState="Maximized" ResizeMode="CanMinimize" StateChanged="MetroWindow_StateChanged">
+    <Window.Resources>
         
-        <Button x:Name="btnUsers" Content="アカウント" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnUsers_Click"/>
+    </Window.Resources>
+    <Grid Background="#00000000">
+        <TabControl>
+            <TabItem Header="リモコン">
+                <Grid>
+                    <CheckBox x:Name="check" IsChecked="False" Checked="check_Checked" Click="check_Click"></CheckBox>
+                    <Grid x:Name="gridMenu" Visibility="Visible">
+                        <Button Content="接続待機" HorizontalAlignment="Left" Margin="34,15,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                        <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="121,15,0,0" VerticalAlignment="Top" Width="87"/>
+                        <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="237,15,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
+                        <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="299,15,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" />
+                    </Grid>
 
+                    <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
+
+                    <Button x:Name="btnUsers" Content="アカウント" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnUsers_Click"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="おすすめ">                
+                <Grid>
+                    <ItemsControl ItemsSource="{Binding Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    
+                                    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                                        <Image Source="{Binding ProfileImage}" Width="48" Height="48" />
+                                        <TextBlock Text="{Binding ScreenName, StringFormat=@{0}さんへのおすすめ}"
+                                                   VerticalAlignment="Bottom" Margin="6,0,0,0"
+                                                   Foreground="Black" FontSize="20" />
+                                    </StackPanel>
+
+                                    <CheckBox Grid.Column="1" IsChecked="{Binding IsVoiceSuggest}">おすすめを音声通知</CheckBox>
+                                    
+                                    <TextBlock Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding SuggestedChannel}"
+                                               Margin="40,6,0,0" Foreground="Black" FontSize="16" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
     
     <Controls:MetroWindow.Flyouts>

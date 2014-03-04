@@ -70,15 +70,7 @@ namespace RemoteControlAdapter.Model
                 }
             }
         }
-
-        public static Time Zero
-        {
-            get
-            {
-                return new Time(0, 0, 0);
-            }
-        }
-
+        
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

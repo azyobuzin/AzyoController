@@ -20,6 +20,7 @@ namespace RemoteControlAdapter
             DispatcherHelper.UIDispatcher = this.Dispatcher;
             ReceivedUserTweets.LoadFromDatabase();
             TweetReceiver.Initialize();
+            ChannelSuggesting.Initialize();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

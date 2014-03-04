@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -17,11 +17,11 @@ namespace RemoteControlAdapter.Model.Tweets
     {
         private static Timer userTimelineTimer;
 
-        public static ConcurrentBag<Status> FilteredTweets { get; private set; }
+        public static SynchronizedCollection<Status> FilteredTweets { get; private set; }
 
         static TweetReceiver()
         {
-            FilteredTweets = new ConcurrentBag<Status>();
+            FilteredTweets = new SynchronizedCollection<Status>();
         }
         
         public static void Initialize()
@@ -66,13 +66,13 @@ namespace RemoteControlAdapter.Model.Tweets
                     {
                         Debug.WriteLine("Filter srteam error: " + ex.ToString());
                         IsRunning = false;
-                        StartFilterStream();
+                        Task.Delay(5 * 1000).ContinueWith(t => StartFilterStream());
                     },
                     () =>
                     {
                         Debug.WriteLine("Filter stream completed");
                         IsRunning = false;
-                        StartFilterStream();
+                        Task.Delay(5 * 1000).ContinueWith(t => StartFilterStream());
                     }
                 );
         }
@@ -93,7 +93,7 @@ namespace RemoteControlAdapter.Model.Tweets
                     foreach (var status in timeline)
                     {
                         await ReceivedUserTweets.AddTweet(status);
-                        foreach (var t in await TweetAnalyzer.Analyze(status))
+                        foreach (var t in await Task.Run(() => TweetAnalyzer.Analyze(status)))
                             await ReceivedUserTweets.IncrementWordCount(user.UserId, t.Item1, t.Item2);
                     }
                 }
@@ -125,6 +125,7 @@ namespace RemoteControlAdapter.Model.Tweets
                         }
                     });
                 }
+                ChannelSuggesting.Suggest();
             }
             catch (Exception ex)
             {

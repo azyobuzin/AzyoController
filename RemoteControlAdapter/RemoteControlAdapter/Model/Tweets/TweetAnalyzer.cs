@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CoreTweet;
 using NMeCab;
 
@@ -9,38 +8,35 @@ namespace RemoteControlAdapter.Model.Tweets
 {
     public static class TweetAnalyzer
     {
-        public static Task<Tuple<string, int>[]> Analyze(Status status)
+        public static Tuple<string, int>[] Analyze(Status status)
         {
-            return Task.Run(() =>
+            var text = status.Text;
+            if (status.Entities != null)
             {
-                var text = status.Text;
-                if (status.Entities != null)
-                {
-                    if (status.Entities.UserMentions != null)
-                        foreach (var entity in status.Entities.UserMentions)
-                            text = text.Replace("@" + entity.ScreenName, "");
-                    if (status.Entities.HashTags != null)
-                        foreach (var entity in status.Entities.HashTags)
-                            text = text.Replace("#" + entity.Text, "");
-                    if (status.Entities.Urls != null)
-                        foreach (var entity in status.Entities.Urls)
-                            text = text.Replace(entity.Uri.ToString(), "");
-                    if (status.Entities.Media != null)
-                        foreach (var entity in status.Entities.Media)
-                            text = text.Replace(entity.Url.ToString(), "");
-                }
+                if (status.Entities.UserMentions != null)
+                    foreach (var entity in status.Entities.UserMentions)
+                        text = text.Replace("@" + entity.ScreenName, "");
+                if (status.Entities.HashTags != null)
+                    foreach (var entity in status.Entities.HashTags)
+                        text = text.Replace("#" + entity.Text, "");
+                if (status.Entities.Urls != null)
+                    foreach (var entity in status.Entities.Urls)
+                        text = text.Replace(entity.Uri.ToString(), "");
+                if (status.Entities.Media != null)
+                    foreach (var entity in status.Entities.Media)
+                        text = text.Replace(entity.Url.ToString(), "");
+            }
 
-                return EnumerateNodes(text)
-                    .Where(n => n.Feature.Split(',')[0] == "名詞" && !n.Surface.All(IsSpecialUnicode))
-                    .GroupBy(n => n.Surface.ToLower())
-                    .Select(g => Tuple.Create(g.Key, g.Count()))
-                    .Concat(
-                        status.Entities.HashTags
-                            .GroupBy(entity => entity.Text.ToLower())
-                            .Select(g => Tuple.Create("#" + g.Key, g.Count()))
-                    )
-                    .ToArray();
-            });
+            return EnumerateNodes(text)
+                .Where(n => n.Feature.Split(',')[0] == "名詞" && !n.Surface.All(IsSpecialUnicode))
+                .GroupBy(n => n.Surface.ToLower())
+                .Select(g => Tuple.Create(g.Key, g.Count()))
+                .Concat(
+                    status.Entities.HashTags
+                        .GroupBy(entity => entity.Text.ToLower())
+                        .Select(g => Tuple.Create("#" + g.Key, g.Count()))
+                )
+                .ToArray();
         }
 
         private static IEnumerable<MeCabNode> EnumerateNodes(string str)

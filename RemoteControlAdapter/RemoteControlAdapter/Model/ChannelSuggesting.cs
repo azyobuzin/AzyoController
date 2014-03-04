@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using RemoteControlAdapter.Model.Tweets;
+using CoreTweet;
 
 namespace RemoteControlAdapter.Model
 {
@@ -25,18 +27,29 @@ namespace RemoteControlAdapter.Model
 
         public static void Suggest()
         {
-            Task.WhenAll(TweetReceiver.FilteredTweets
-                    .Where(s => s.CreatedAt >= DateTimeOffset.Now - TimeSpan.FromMinutes(10))
-                    .Select(TweetAnalyzer.Analyze))
-                .ContinueWith(t =>
+            Task.Run(() =>
+            {
+                try
                 {
+                    Status[] toRemove;
+                    lock (TweetReceiver.FilteredTweets.SyncRoot)
+                        toRemove = TweetReceiver.FilteredTweets
+                            .Where(s => s.CreatedAt < DateTimeOffset.Now - TimeSpan.FromMinutes(10))
+                            .ToArray();
+
+                    foreach (var s in toRemove) TweetReceiver.FilteredTweets.Remove(s);
+
+                    Tuple<string, int>[][] analyzed;
+                    lock (TweetReceiver.FilteredTweets.SyncRoot)
+                        analyzed = TweetReceiver.FilteredTweets.Select(TweetAnalyzer.Analyze).ToArray();
+
                     foreach (var user in Settings.Instance.Users)
                     {
                         var rank = new Dictionary<Channel, long>();
                         foreach (var channel in Settings.Channels) rank.Add(channel, 0);
                         var wordList = ReceivedUserTweets.GetWordList(user.UserId);
 
-                        foreach (var filtered in t.Result.Select(f => f.Select(x => x.Item1).ToArray()))
+                        foreach (var filtered in analyzed.Select(f => f.Select(x => x.Item1).ToArray()))
                         {
                             var point = filtered.Aggregate(0L, (i, str) =>
                             {
@@ -53,7 +66,13 @@ namespace RemoteControlAdapter.Model
                         else
                             user.SuggestedChannel = rank.OrderByDescending(kvp => kvp.Value).First().Key;
                     }
-                });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Suggest error: " + ex.ToString());
+                }
+            });
+
         }
 
         public static void SuggestWithVoice()

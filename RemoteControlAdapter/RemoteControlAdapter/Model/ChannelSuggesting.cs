@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using RemoteControlAdapter.Model.Tweets;
 using CoreTweet;
+using RemoteControlAdapter.Model.Tweets;
 
 namespace RemoteControlAdapter.Model
 {
@@ -45,8 +45,8 @@ namespace RemoteControlAdapter.Model
 
                     foreach (var user in Settings.Instance.Users)
                     {
-                        var rank = new Dictionary<Channel, long>();
-                        foreach (var channel in Settings.Channels) rank.Add(channel, 0);
+                        var rank = new Dictionary<Channel, List<long>>();
+                        foreach (var channel in Settings.Channels) rank.Add(channel, new List<long>());
                         var wordList = ReceivedUserTweets.GetWordList(user.UserId);
 
                         foreach (var filtered in analyzed.Select(f => f.Select(x => x.Item1).ToArray()))
@@ -58,13 +58,21 @@ namespace RemoteControlAdapter.Model
                             });
 
                             foreach (var channel in Settings.Channels.Where(ch => filtered.Contains(ch.Hashtag)))
-                                rank[channel] += point;
+                                rank[channel].Add(point);
                         }
 
-                        if (rank.Values.All(v => v == 0))
+                        if (rank.Values.All(v => v.Count == 0))
                             user.SuggestedChannel = null;
                         else
-                            user.SuggestedChannel = rank.OrderByDescending(kvp => kvp.Value).First().Key;
+                        {
+                            var top = rank
+                                .Where(kvp => kvp.Value.Count != 0)
+                                .Select(kvp => Tuple.Create(kvp.Key, (double)kvp.Value.Sum() / kvp.Value.Count))
+                                .OrderByDescending(t => t.Item2)
+                                .First();
+                            user.SuggestedChannel = top.Item1;
+                            Debug.WriteLine("Suggest {0} for @{1}, rank {2}", top.Item1.Name, user.ScreenName, top.Item2);
+                        }
                     }
                 }
                 catch (Exception ex)

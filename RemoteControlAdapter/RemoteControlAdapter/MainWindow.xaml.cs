@@ -78,7 +78,9 @@ namespace RemoteControlAdapter
                 var info = ss.GetInstalledVoices().Where(q => q.VoiceInfo.Culture.LCID == 1033).Select(q => q).Single();
                 ss.SelectVoice(info.VoiceInfo.Name);
                 ss.Rate = -2;
-                ss.SpeakAsync("Privilege Suggest you Television, NHK");
+                ss.SpeakAsync(string.Join(" ", Settings.Instance.Users
+                    .Where(u => u.IsVoiceSuggest && u.SuggestedChannel != null)
+                    .Select(u => string.Format("{0}, how about watching {1}?", u.ScreenName, u.SuggestedChannel.Name))));
                 circleSelector.IsSuggest = true;
             };
             //COMポートリストを再取得

@@ -1,19 +1,16 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO.Ports;
+using System.Linq;
+using System.Threading.Tasks;
 using Livet;
 using Livet.Commands;
 using Livet.EventListeners;
 using Livet.Messaging;
-using RemoteControlAdapter.Model;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO.Ports;
-using System.Runtime.Serialization;
-using System.Net;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
+using RemoteControlAdapter.Model;
 
 namespace RemoteControlAdapter.ViewModel
 {
@@ -123,6 +120,7 @@ namespace RemoteControlAdapter.ViewModel
             PortList = new ObservableCollection<string>();
             OnSuggest += () => { };
 
+            ChannelSuggesting.RequestedVoiceSuggest += (sender, e) => OnSuggest();
 
             this.CompositeDisposable.Add(new PropertyChangedEventListener(Settings.Instance, (sender, e) =>
             {

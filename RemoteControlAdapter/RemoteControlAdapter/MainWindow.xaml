@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:RemoteControlAdapter" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModel="clr-namespace:RemoteControlAdapter.ViewModel" mc:Ignorable="d" x:Class="RemoteControlAdapter.MainWindow"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="MainWindow" Height="835" Width="1000"
+        Title="AzyoRemocon" Height="835" Width="1000"
         WindowState="Maximized" ResizeMode="CanMinimize" StateChanged="MetroWindow_StateChanged">
     <Window.Resources>
         

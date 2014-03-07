@@ -31,19 +31,25 @@ namespace RemoteControlAdapter
 
         public bool IsSuggest
         {
-            get { 
-                
-                 return isSuggest; }
-            set {
-                if (value)
+            get
+            { 
+                return isSuggest;
+            }
+            set
+            {
+                isSuggest = value;
+                this.Dispatcher.InvokeAsync(() =>
                 {
-                    VisualStateManager.GoToState(this, "SuggestMode", true);
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, "NormalMode", true);
-                }
-                isSuggest = value;  }
+                    if (value)
+                    {
+                        VisualStateManager.GoToState(this, "SuggestMode", true);
+                    }
+                    else
+                    {
+                        VisualStateManager.GoToState(this, "NormalMode", true);
+                    }
+                });
+            }
         }
 
         public CircleSelector()

@@ -7,12 +7,12 @@ using System.Windows;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("RemoteControlAdapter")]
+[assembly: AssemblyTitle("AzyoRemocon")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RemoteControlAdapter")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyProduct("AzyoRemocon")]
+[assembly: AssemblyCopyright("Copyright (c) 2014 garicchi, azyobuzin")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -140,7 +140,7 @@ namespace RemoteControlAdapter
 
         private void btnUsers_Click(object sender, RoutedEventArgs e)
         {
-            flyoutUsers.IsOpen = true;
+            this.flyoutUsers.IsOpen = !this.flyoutUsers.IsOpen;
         }
 
         private void check_Checked(object sender, RoutedEventArgs e)
@@ -178,6 +178,11 @@ namespace RemoteControlAdapter
             this.ResizeMode = this.WindowState == WindowState.Normal
                 ? ResizeMode.CanResize
                 : ResizeMode.CanMinimize;
+        }
+
+        private void btnCredit_Click(object sender, RoutedEventArgs e)
+        {
+            this.flyoutCredit.IsOpen = !this.flyoutCredit.IsOpen;
         }
 
     }

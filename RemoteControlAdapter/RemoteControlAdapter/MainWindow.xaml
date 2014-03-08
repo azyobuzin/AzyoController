@@ -5,9 +5,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="AzyoRemocon" Height="835" Width="1000"
         WindowState="Maximized" ResizeMode="CanMinimize" StateChanged="MetroWindow_StateChanged">
-    <Window.Resources>
-        
-    </Window.Resources>
+
     <Grid Background="#00000000">
         <TabControl>
             <TabItem Header="リモコン">
@@ -23,7 +21,6 @@
 
                     <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
 
-                    <Button x:Name="btnUsers" Content="アカウント" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnUsers_Click"/>
                 </Grid>
             </TabItem>
             
@@ -71,7 +68,14 @@
             </TabItem>
         </TabControl>
     </Grid>
-    
+
+    <Controls:MetroWindow.WindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="btnUsers" Content="アカウント設定" Click="btnUsers_Click" />
+            <Button x:Name="btnCredit" Content="クレジット" Click="btnCredit_Click" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.WindowCommands>
+
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
             <Controls:Flyout x:Name="flyoutUsers" Header="アカウント" Position="Right" Width="350">
@@ -145,6 +149,102 @@
                     <Button x:Name="btnRemoveAccount" Grid.Row="2" Grid.ColumnSpan="2" Content="アカウント削除"
                             Padding="5,10" Command="{Binding RemoveCommand}" Click="btnRemoveAccount_Click" />
                 </Grid>
+            </Controls:Flyout>
+
+            <Controls:Flyout x:Name="flyoutCredit" Header="クレジット" Position="Right" Width="350">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="6">
+                        AzyoRemocon<LineBreak />
+                        Copyright (c) 2014 garicchi, azyobuzin<LineBreak /><LineBreak />
+                        Built with:
+                    </TextBlock>
+                    <Expander Header="CoreTweet">
+                        <TextBlock TextWrapping="Wrap">
+                            The MIT License (MIT)<LineBreak /><LineBreak />
+                            
+                            CoreTweet - A .NET Twitter Library supporting Twitter API 1.1<LineBreak />
+                            Copyright (c) 2013 lambdalice<LineBreak /><LineBreak />
+
+                            Permission is hereby granted, free of charge, to any person obtaining a copy
+                            of this software and associated documentation files (the "Software"), to deal
+                            in the Software without restriction, including without limitation the rights
+                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is
+                            furnished to do so, subject to the following conditions:<LineBreak /><LineBreak />
+
+                            The above copyright notice and this permission notice shall be included in
+                            all copies or substantial portions of the Software.<LineBreak /><LineBreak />
+
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                            THE SOFTWARE.
+                        </TextBlock>
+                    </Expander>
+                    <Expander Header="DbExecutor">
+                        <TextBlock TextWrapping="Wrap">Copyright © neuecc 2011</TextBlock>
+                    </Expander>
+                    <Expander Header="Json.NET">
+                        <TextBlock TextWrapping="Wrap">
+                            The MIT License (MIT)<LineBreak /><LineBreak />
+
+                            Copyright (c) 2007 James Newton-King<LineBreak /><LineBreak />
+
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<LineBreak /><LineBreak />
+
+                            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<LineBreak /><LineBreak />
+
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        </TextBlock>
+                    </Expander>
+                    <Expander Header="Livet">
+                        <TextBlock TextWrapping="Wrap">Livet Copyright (c) 2010-2011 Livet Project</TextBlock>
+                    </Expander>
+                    <Expander Header="MahApps.Metro">
+                        <TextBlock TextWrapping="Wrap">
+                            Copyright © MahApps.Metro 2013<LineBreak /><LineBreak />
+                            
+                            Entypo (http://www.entypo.com/) is created by Daniel Bruce and released under the Creative Commons, Share Alike/Attribution license.<LineBreak />
+                            http://creativecommons.org/licenses/by-sa/3.0/
+                        </TextBlock>
+                    </Expander>
+                    <Expander Header="NMeCab">
+                        <TextBlock TextWrapping="Wrap">
+                            NMeCab was ported from MeCab by Tsuyoshi Komuta, and is released under
+                            any of the GPL (see the file GPL) or the LGPL (see the file LGPL).<LineBreak /><LineBreak />
+
+                            MeCab is copyrighted free software by Taku Kudo &lt;taku@chasen.org&gt; and
+                            Nippon Telegraph and Telephone Corporation, and is released under
+                            any of the GPL (see the file GPL), the LGPL (see the file LGPL), or the
+                            BSD License (see the file BSD).
+                        </TextBlock>
+                    </Expander>
+                    <Expander Header="Reactive Extensions">
+                        <TextBlock TextWrapping="Wrap">
+                            Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.<LineBreak />
+                            Microsoft Open Technologies would like to thank its contributors, a list
+                            of whom are at http://rx.codeplex.com/wikipage?title=Contributors.<LineBreak /><LineBreak />
+
+                            Licensed under the Apache License, Version 2.0 (the "License"); you
+                            may not use this file except in compliance with the License. You may
+                            obtain a copy of the License at<LineBreak /><LineBreak />
+
+                            http://www.apache.org/licenses/LICENSE-2.0<LineBreak /><LineBreak />
+
+                            Unless required by applicable law or agreed to in writing, software
+                            distributed under the License is distributed on an "AS IS" BASIS,
+                            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+                            implied. See the License for the specific language governing permissions
+                            and limitations under the License.
+                        </TextBlock>
+                    </Expander>
+                    <Expander Header="System.Data.SQLite">
+                        <TextBlock TextWrapping="Wrap">System.Data.SQLite is in the Public Domain</TextBlock>
+                    </Expander>
+                </StackPanel>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using Livet;
 using RemoteControlAdapter.Model;
 using RemoteControlAdapter.Model.Tweets;
@@ -21,10 +16,12 @@ namespace RemoteControlAdapter
             ReceivedUserTweets.LoadFromDatabase();
             TweetReceiver.Initialize();
             ChannelSuggesting.Initialize();
+            UsualSuggesting.Initialize();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            UsualSuggesting.EndWatching();
             Settings.Instance.Save();
         }
     }

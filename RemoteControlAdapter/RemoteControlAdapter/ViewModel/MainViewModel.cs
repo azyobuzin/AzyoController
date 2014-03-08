@@ -130,6 +130,8 @@ namespace RemoteControlAdapter.ViewModel
             }));
 
             this.Users = ViewModelHelper.CreateReadOnlyDispatcherCollection(Settings.Instance.Users, u => new UserViewModel(u), DispatcherHelper.UIDispatcher);
+
+            UsualSuggesting.SuggestedChannelChanged += (sender, e) => this.RaisePropertyChanged(() => this.UsualChannel);
         }
 
         /// <summary>
@@ -224,6 +226,20 @@ namespace RemoteControlAdapter.ViewModel
 
             ChangeChannelCommand = new ListenerCommand<ControlType>(channel =>
             {
+                UsualSuggesting.SetWatchingChannel(
+                    channel == ControlType.Chanel1
+                        ? 1
+                        : channel == ControlType.Chanel4
+                            ? 4
+                            : channel == ControlType.Chanel5
+                                ? 5
+                                : channel == ControlType.Chanel6
+                                    ? 6
+                                    : channel == ControlType.Chanel8
+                                        ? 8
+                                        : 10
+                );
+
                 //Arduinoのシリアルポートに書き込み
                 _serialPort.WriteLine(((int)channel).ToString());
             });
@@ -232,6 +248,8 @@ namespace RemoteControlAdapter.ViewModel
             {
                 //Arduinoのシリアルポートに書き込み
                 WriteSerialPort(((int)ControlType.Power).ToString());
+
+                UsualSuggesting.EndWatching();
             });
 
             ResetPortListCommand = new ViewModelCommand(() =>
@@ -354,6 +372,16 @@ namespace RemoteControlAdapter.ViewModel
                 {
                     this.users = value;
                 }
+            }
+        }
+
+        public string UsualChannel
+        {
+            get
+            {
+                return UsualSuggesting.SuggestedChannel != null
+                    ? string.Format("{0} {1}", UsualSuggesting.SuggestedChannel.Number, UsualSuggesting.SuggestedChannel.Name)
+                    : "データがないため、おすすめできません。";
             }
         }
     }

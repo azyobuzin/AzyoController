@@ -14,6 +14,9 @@ namespace RemoteControlAdapter.Model
             this.Second = second;
         }
 
+        public Time(DateTime datetime) : this(datetime.Hour, datetime.Minute, datetime.Second)
+        { }
+
         private int hour;
         public int Hour
         {

@@ -108,6 +108,7 @@
     <Compile Include="Model\ChannelSuggesting.cs" />
     <Compile Include="Model\ControlType.cs" />
     <Compile Include="Model\Databases\Database.cs" />
+    <Compile Include="Model\Databases\Operation.cs" />
     <Compile Include="Model\Databases\Tweet.cs" />
     <Compile Include="Model\Databases\WordCount.cs" />
     <Compile Include="Model\MobileControlType.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Model\Tweets\TweetAnalyzer.cs" />
     <Compile Include="Model\Tweets\TweetReceiver.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UsualSuggesting.cs" />
     <Compile Include="SelectAddress.xaml.cs">
       <DependentUpon>SelectAddress.xaml</DependentUpon>
     </Compile>

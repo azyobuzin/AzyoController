@@ -13,7 +13,7 @@ namespace RemoteControlAdapter.Model.Tweets
 
         public static async void LoadFromDatabase()
         {
-            using (var exec = await Database.Connect())
+            using (var exec = await Database.ConnectAsync())
             {
                 await Task.Run(() =>
                 {
@@ -36,7 +36,7 @@ namespace RemoteControlAdapter.Model.Tweets
         public static async Task AddTweet(Status status)
         {
             tweetIds.Add(status.ID);
-            using (var exec = await Database.Connect())
+            using (var exec = await Database.ConnectAsync())
                 await Task.Run(() =>
                 {
                     exec.Insert("MyTweets", Tweet.FromStatus(status));
@@ -47,7 +47,7 @@ namespace RemoteControlAdapter.Model.Tweets
         public static async Task IncrementWordCount(long userId, string word, int add)
         {
             var w = await Task.Run(() => words.FirstOrDefault(x => x.UserId == userId && x.Word == word));
-            using (var exec = await Database.Connect())
+            using (var exec = await Database.ConnectAsync())
             {
                 if (w == null)
                 {

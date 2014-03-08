@@ -29,7 +29,17 @@
             
             <TabItem Header="おすすめ">                
                 <Grid>
-                    <ItemsControl ItemsSource="{Binding Users}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    
+                    <StackPanel Grid.Row="0" Margin="10" Orientation="Vertical">
+                        <TextBlock Text="いつものチャンネル" Foreground="Black" FontSize="20" />
+                        <TextBlock Text="{Binding UsualChannel}" Margin="40,6,0,0" Foreground="Black" FontSize="16" />
+                    </StackPanel>
+                    
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Users}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="10">

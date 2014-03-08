@@ -74,14 +74,15 @@ namespace RemoteControlAdapter
 
             _viewModel.OnSuggest += () =>
             {
+                circleSelector.IsSuggest = true;
                 SpeechSynthesizer ss = new SpeechSynthesizer();
                 var info = ss.GetInstalledVoices().Where(q => q.VoiceInfo.Culture.LCID == 1033).Select(q => q).Single();
                 ss.SelectVoice(info.VoiceInfo.Name);
                 ss.Rate = -2;
+                ss.SpeakCompleted += (sender, e) => circleSelector.IsSuggest = false;
                 ss.SpeakAsync(string.Join(" ", Settings.Instance.Users
                     .Where(u => u.IsVoiceSuggest && u.SuggestedChannel != null)
                     .Select(u => string.Format("{0}, how about watching {1}?", u.ScreenName, u.SuggestedChannel.Name))));
-                circleSelector.IsSuggest = true;
             };
             //COMポートリストを再取得
             _viewModel.ResetPortListCommand.Execute();

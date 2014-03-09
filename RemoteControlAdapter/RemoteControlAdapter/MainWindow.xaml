@@ -23,19 +23,19 @@
 
                 </Grid>
             </TabItem>
-            
-            <TabItem Header="おすすめ">                
+
+            <TabItem Header="おすすめ">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    
+
                     <StackPanel Grid.Row="0" Margin="10" Orientation="Vertical">
                         <TextBlock Text="いつものチャンネル" Foreground="Black" FontSize="20" />
                         <TextBlock Text="{Binding UsualChannel}" Margin="40,6,0,0" Foreground="Black" FontSize="16" />
                     </StackPanel>
-                    
+
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding Users}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -48,7 +48,7 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    
+
                                     <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                                         <Image Source="{Binding ProfileImage}" Width="48" Height="48" />
                                         <TextBlock Text="{Binding ScreenName, StringFormat=@{0}さんへのおすすめ}"
@@ -57,13 +57,16 @@
                                     </StackPanel>
 
                                     <CheckBox Grid.Column="1" IsChecked="{Binding IsVoiceSuggest}">おすすめを音声通知</CheckBox>
-                                    
+
                                     <TextBlock Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding SuggestedChannel}"
                                                Margin="40,6,0,0" Foreground="Black" FontSize="16" />
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    
+                    <Button Content="音声通知テスト" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right"
+                            Command="{Binding TestSuggestingCommand}" />
                 </Grid>
             </TabItem>
         </TabControl>
@@ -84,7 +87,7 @@
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    
+
                     <ListBox Grid.Row="0" ItemsSource="{Binding Users}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -119,7 +122,7 @@
 
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="利用可能時間の設定" FontSize="16" />
                     <Button Grid.Column="1" Grid.Row="0" Content="+" Command="{Binding AddTimeCommand}" />
-                    
+
                     <ListBox Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding AvailableTimes}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

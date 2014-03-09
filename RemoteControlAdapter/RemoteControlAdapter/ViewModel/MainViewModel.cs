@@ -68,6 +68,10 @@ namespace RemoteControlAdapter.ViewModel
         /// アカウント追加を開始する
         /// </summary>
         public ViewModelCommand AddUserCommand { get; set; }
+        /// <summary>
+        /// 音声サジェストをテストする
+        /// </summary>
+        public ViewModelCommand TestSuggestingCommand { get; set; }
 
         #endregion
 
@@ -343,6 +347,12 @@ namespace RemoteControlAdapter.ViewModel
                     }
                     progress.CloseAsync();
                 }
+            });
+
+            TestSuggestingCommand = new ViewModelCommand(() =>
+            {
+                if (OnSuggest != null)
+                    Task.Run(() => OnSuggest());
             });
 
         }

@@ -92,9 +92,13 @@ namespace RemoteControlAdapter.Model.Tweets
                     );
                     foreach (var status in timeline)
                     {
-                        await ReceivedUserTweets.AddTweet(status);
-                        foreach (var t in await Task.Run(() => TweetAnalyzer.Analyze(status)))
-                            await ReceivedUserTweets.IncrementWordCount(user.UserId, t.Item1, t.Item2);
+                        try
+                        {
+                            await ReceivedUserTweets.AddTweet(status);
+                            foreach (var t in await Task.Run(() => TweetAnalyzer.Analyze(status)))
+                                await ReceivedUserTweets.IncrementWordCount(user.UserId, t.Item1, t.Item2);
+                        }
+                        catch { }
                     }
                 }
                 catch (Exception ex)

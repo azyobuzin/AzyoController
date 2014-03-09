@@ -13,11 +13,11 @@ namespace RemoteControlAdapter.Model
     {
         public static void Initialize()
         {
-            timer = new Timer(60 * 1000);
+            timer = new Timer(120 * 1000);
             timer.Elapsed += (sender, e) =>
             {
                 Suggest();
-                if (new[] { 10, 40 }.Contains(e.SignalTime.Minute))
+                if (new[] { 10, 11, 40, 41 }.Contains(e.SignalTime.Minute))
                     SuggestWithVoice();
             };
             timer.Start();
@@ -27,6 +27,8 @@ namespace RemoteControlAdapter.Model
 
         public static void Suggest()
         {
+            if (!Settings.Instance.Users.Any()) return;
+
             Task.Run(() =>
             {
                 try

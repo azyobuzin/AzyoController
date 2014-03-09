@@ -110,7 +110,7 @@ namespace RemoteControlAdapter.ViewModel
             set { _portList = value; }
         }
 
-        public event Action OnSuggest;
+        public event Action<bool> OnSuggest;
 
         public MainViewModel()
         {
@@ -122,9 +122,9 @@ namespace RemoteControlAdapter.ViewModel
             ClientList = new ObservableCollection<SocketClient>();
 
             PortList = new ObservableCollection<string>();
-            OnSuggest += () => { };
+            OnSuggest += force => { };
 
-            ChannelSuggesting.RequestedVoiceSuggest += (sender, e) => OnSuggest();
+            ChannelSuggesting.RequestedVoiceSuggest += (sender, e) => OnSuggest(false);
 
             this.CompositeDisposable.Add(new PropertyChangedEventListener(Settings.Instance, (sender, e) =>
             {
@@ -351,8 +351,7 @@ namespace RemoteControlAdapter.ViewModel
 
             TestSuggestingCommand = new ViewModelCommand(() =>
             {
-                if (OnSuggest != null)
-                    Task.Run(() => OnSuggest());
+                Task.Run(() => OnSuggest(true));
             });
 
         }

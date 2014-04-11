@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RemoteControlAdapter.SelectAddress"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SelectAddress" Height="400" Width="600">
+        Title="接続待機アドレスの選択" Height="400" Width="600">
     <Grid>
         <ListView x:Name="ipList" SelectionChanged="ipList_SelectionChanged" FontSize="36"></ListView>
     </Grid>

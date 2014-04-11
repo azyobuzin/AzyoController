@@ -145,6 +145,9 @@ namespace RemoteControlAdapter.ViewModel
         {
             BeginListenCommand = new ListenerCommand<string>(async ip =>
             {
+                Settings.Instance.IpAddress = ip;
+                Settings.Instance.Save();
+
                 //自身のIPと指定ポート番号でリスナー初期化
                 Socket = new SocketListener(ip, 5000);
 

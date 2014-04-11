@@ -31,6 +31,8 @@ namespace RemoteControlAdapter.Model
 
         public ObservableCollection<User> Users { get; private set; }
 
+        public string IpAddress { get; set; }
+
         private static Settings instance;
         public static Settings Instance
         {

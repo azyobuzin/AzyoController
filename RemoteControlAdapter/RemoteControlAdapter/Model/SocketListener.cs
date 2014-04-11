@@ -45,7 +45,7 @@ namespace RemoteControlAdapter.Model
 
         public async Task ListenAsync()
         {
-            await Task.Run(() =>
+            await Task.Factory.StartNew(() =>
             {
                 try
                 {
@@ -66,7 +66,7 @@ namespace RemoteControlAdapter.Model
                 {
                     OnDisConnection();
                 }
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         public void DisConnect()

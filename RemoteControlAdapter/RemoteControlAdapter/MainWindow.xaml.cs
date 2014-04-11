@@ -91,8 +91,6 @@ namespace RemoteControlAdapter
                         : speakText);
                 }
             };
-            //COMポートリストを再取得
-            _viewModel.ResetPortListCommand.Execute();
 
             messageListener = new MessageListener(_viewModel.Messenger)
             {
@@ -121,9 +119,9 @@ namespace RemoteControlAdapter
             };
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var address = Dns.GetHostAddresses(Dns.GetHostName());
+            var address = await Dns.GetHostAddressesAsync(Dns.GetHostName());
             SelectAddress window = new SelectAddress(address.Select(q=>q.ToString()).ToList());
             window.Show();
             window.OnSelectAddress += (add) =>
@@ -194,6 +192,15 @@ namespace RemoteControlAdapter
         private void btnCredit_Click(object sender, RoutedEventArgs e)
         {
             this.flyoutCredit.IsOpen = !this.flyoutCredit.IsOpen;
+        }
+
+        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            //COMポートリストを再取得
+            _viewModel.ResetPortListCommand.Execute();
+
+            if (!string.IsNullOrEmpty(Settings.Instance.IpAddress))
+                _viewModel.BeginListenCommand.Execute(Settings.Instance.IpAddress);
         }
 
     }

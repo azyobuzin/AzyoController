@@ -158,52 +158,59 @@ namespace RemoteControlAdapter.ViewModel
                     //データがきたら
                     client.ReceiveCompleted += str =>
                     {
-                        Debug.WriteLine("データ受信" + str);
-                        //Remoteデータクラスにデシリアル化
-                        var remoteData = JsonConvert.DeserializeObject<RemoteData>(str);
-
-                        var user = Settings.Instance.Users.FirstOrDefault(u => u.ScreenName == remoteData.Name);
-                        if (user != null && user.AvailableTimes.Any(t => Time.IsInTimeSpan(DateTime.Now, t.Start, t.End)))
+                        try
                         {
-                            //どのような信号か判別してコマンド実行
-                            switch ((ControlType)remoteData.ControlData)
+                            Debug.WriteLine("データ受信" + str);
+                            //Remoteデータクラスにデシリアル化
+                            var remoteData = JsonConvert.DeserializeObject<RemoteData>(str);
+
+                            var user = Settings.Instance.Users.FirstOrDefault(u => u.ScreenName == remoteData.Name);
+                            if (user != null && user.AvailableTimes.Any(t => Time.IsInTimeSpan(DateTime.Now, t.Start, t.End)))
                             {
-                                case ControlType.Power:
-                                    PowerCommand.Execute();
-                                    break;
-                                case ControlType.VolueUp:
-                                    VolumeUpCommand.Execute();
-                                    break;
-                                case ControlType.VolumeDown:
-                                    VolumeDownCommand.Execute();
-                                    break;
-                                case ControlType.Chanel1:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel1);
-                                    break;
-                                case ControlType.Chanel4:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel4);
-                                    break;
-                                case ControlType.Chanel5:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel5);
-                                    break;
-                                case ControlType.Chanel6:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel6);
-                                    break;
-                                case ControlType.Chanel8:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel8);
-                                    break;
-                                case ControlType.Chanel10:
-                                    ChangeChannelCommand.Execute(ControlType.Chanel10);
-                                    break;
+                                //どのような信号か判別してコマンド実行
+                                switch ((ControlType)remoteData.ControlData)
+                                {
+                                    case ControlType.Power:
+                                        PowerCommand.Execute();
+                                        break;
+                                    case ControlType.VolueUp:
+                                        VolumeUpCommand.Execute();
+                                        break;
+                                    case ControlType.VolumeDown:
+                                        VolumeDownCommand.Execute();
+                                        break;
+                                    case ControlType.Chanel1:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel1);
+                                        break;
+                                    case ControlType.Chanel4:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel4);
+                                        break;
+                                    case ControlType.Chanel5:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel5);
+                                        break;
+                                    case ControlType.Chanel6:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel6);
+                                        break;
+                                    case ControlType.Chanel8:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel8);
+                                        break;
+                                    case ControlType.Chanel10:
+                                        ChangeChannelCommand.Execute(ControlType.Chanel10);
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                MobileRemoteData data = new MobileRemoteData()
+                                {
+                                    ControlType = MobileControlType.Reject
+                                };
+                                client.SendTextAsync(JsonConvert.SerializeObject(data));
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MobileRemoteData data = new MobileRemoteData()
-                            {
-                                ControlType = MobileControlType.Reject
-                            };
-                            client.SendTextAsync(JsonConvert.SerializeObject(data));
+                            Debug.WriteLine("Failed reading data from socket: " + ex.ToString());
                         }
 
                         //再度受信開始
@@ -245,7 +252,7 @@ namespace RemoteControlAdapter.ViewModel
                 );
 
                 //Arduinoのシリアルポートに書き込み
-                _serialPort.WriteLine(((int)channel).ToString());
+                WriteSerialPort(((int)channel).ToString());
             });
 
             PowerCommand = new ViewModelCommand(() =>
@@ -268,17 +275,44 @@ namespace RemoteControlAdapter.ViewModel
 
             });
 
-            ConnectArduino = new ListenerCommand<string>(port =>
+            ConnectArduino = new ListenerCommand<string>(async port =>
             {
                 //Arduinoのシリアルポートをオープン
-                _serialPort = new SerialPort(port, 9600);
-                _serialPort.Open();
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        if (_serialPort != null)
+                        {
+                            try
+                            {
+                                _serialPort.Close();
+                                _serialPort = null;
+                            }
+                            catch { }
+                        }
+                        _serialPort = new SerialPort(port, 9600);
+                        _serialPort.Open();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Couldn't open serial port: " + ex.ToString());
+                    this.Messenger.Raise(new GenericInteractionMessage<string>("シリアルポート接続を開けませんでした。", "ErrorMessage"));
+                }
             });
 
             DisConnectArduino = new ViewModelCommand(() =>
             {
                 //Arduinoのシリアルポートをクローズ
-                _serialPort.Close();
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        _serialPort.Close();
+                    }
+                    catch { }
+                });
             });
 
             VolumeUpCommand = new ViewModelCommand(() =>
@@ -356,15 +390,24 @@ namespace RemoteControlAdapter.ViewModel
 
         }
 
-        private void WriteSerialPort(string str)
+        private async void WriteSerialPort(string str)
         {
             if (_serialPort != null && _serialPort.IsOpen)
             {
-                _serialPort.WriteLine(str);
+                try
+                {
+                    await Task.Run(() => _serialPort.WriteLine(str));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Failed writing to serial port: " + ex.ToString());
+                    this.Messenger.Raise(new GenericInteractionMessage<string>("リモコン操作に失敗しました。", "ErrorMessage"));
+                }
             }
             else
             {
                 Debug.WriteLine("シリアルポートが開いてません");
+                await this.Messenger.RaiseAsync(new GenericInteractionMessage<string>("IR 送信機の設定が完了していません。", "ErrorMessage"));
             }
         }
 

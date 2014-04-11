@@ -113,6 +113,10 @@ namespace RemoteControlAdapter
                 {
                     "AuthorizationError",
                     m => this.ShowMessageAsync("アカウント追加", "Twitter にログインできませんでした。")
+                },
+                {
+                    "ErrorMessage",
+                    m => this.ShowMessageAsync("エラー", (m as GenericInteractionMessage<string>).Value)
                 }
             };
         }

@@ -115,19 +115,19 @@ namespace RemoteControlAdapter.Model
             }
         }
 
-        private Channel suggestedChannel;
+        private Suggestion[] suggestedChannels;
         [JsonIgnore]
-        public Channel SuggestedChannel
+        public Suggestion[] SuggestedChannels
         {
             get
             {
-                return this.suggestedChannel;
+                return this.suggestedChannels;
             }
             set
             {
-                if (this.suggestedChannel != value)
+                if (this.suggestedChannels != value)
                 {
-                    this.suggestedChannel = value;
+                    this.suggestedChannels = value;
                     this.RaisePropertyChanged();
                 }
             }

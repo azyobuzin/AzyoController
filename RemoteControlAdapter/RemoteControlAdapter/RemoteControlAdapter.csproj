@@ -118,6 +118,7 @@
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\SocketListener.cs" />
     <Compile Include="Model\RemoteData.cs" />
+    <Compile Include="Model\Suggestion.cs" />
     <Compile Include="Model\Time.cs" />
     <Compile Include="Model\Tweets\OAuth2.cs" />
     <Compile Include="Model\Tweets\ReceivedUserTweets.cs" />

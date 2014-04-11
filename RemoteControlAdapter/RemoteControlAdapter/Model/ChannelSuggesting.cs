@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using CoreTweet;
+using RemoteControlAdapter.Model.Databases;
 using RemoteControlAdapter.Model.Tweets;
 
 namespace RemoteControlAdapter.Model
@@ -41,40 +42,45 @@ namespace RemoteControlAdapter.Model
 
                     foreach (var s in toRemove) TweetReceiver.FilteredTweets.Remove(s);
 
-                    Tuple<string, int>[][] analyzed;
+                    Status[] filteredTweets;
                     lock (TweetReceiver.FilteredTweets.SyncRoot)
-                        analyzed = TweetReceiver.FilteredTweets.Select(TweetAnalyzer.Analyze).ToArray();
+                        filteredTweets = TweetReceiver.FilteredTweets.ToArray();
+                    var analyzed = filteredTweets.Select(TweetAnalyzer.Analyze).ToArray();
 
                     foreach (var user in Settings.Instance.Users)
                     {
-                        var rank = new Dictionary<Channel, List<long>>();
-                        foreach (var channel in Settings.Channels) rank.Add(channel, new List<long>());
+                        var rank = new Dictionary<Channel, List<WordCount>>();
+                        foreach (var channel in Settings.Channels) rank.Add(channel, new List<WordCount>());
                         var wordList = ReceivedUserTweets.GetWordList(user.UserId);
 
                         foreach (var filtered in analyzed.Select(f => f.Select(x => x.Item1).ToArray()))
                         {
-                            var point = filtered.Aggregate(0L, (i, str) =>
-                            {
-                                var word = wordList.FirstOrDefault(w => w.Word == str);
-                                return word != null ? i + word.Count : i;
-                            });
+                            var points = filtered.Select(str => wordList.FirstOrDefault(w => w.Word == str))
+                                .Where(w => w != null)
+                                .ToArray();
 
                             foreach (var channel in Settings.Channels.Where(ch => filtered.Contains(ch.Hashtag)))
-                                rank[channel].Add(point);
+                                rank[channel].AddRange(points);
                         }
 
-                        if (rank.Values.All(v => v.Count == 0))
-                            user.SuggestedChannel = null;
-                        else
-                        {
-                            var top = rank
-                                .Where(kvp => kvp.Value.Count != 0)
-                                .Select(kvp => Tuple.Create(kvp.Key, (double)kvp.Value.Sum() / kvp.Value.Count))
-                                .OrderByDescending(t => t.Item2)
-                                .First();
-                            user.SuggestedChannel = top.Item1;
-                            Debug.WriteLine("Suggest {0} for @{1}, rank {2}", top.Item1.Name, user.ScreenName, top.Item2);
-                        }
+                        user.SuggestedChannels = rank
+                            .Where(kvp => kvp.Value.Any())
+                            .Select(kvp => Tuple.Create(
+                                kvp.Key,
+                                kvp.Value.GroupBy(w => w.Word)
+                                    .Select(g => Tuple.Create(g.Key, g.Select(w => w.Count).Sum()))
+                                    .ToArray()
+                            ))
+                            .OrderByDescending(x => x.Item2.Select(y => y.Item2).Sum())
+                            .Select(x => new Suggestion() {
+                                Channel = x.Item1,
+                                Words = x.Item2.OrderByDescending(y => y.Item2)
+                                    .Select(y => y.Item1)
+                                    .Take(3)
+                                    .ToArray()
+                            })
+                            .Take(2)
+                            .ToArray();
                     }
                 }
                 catch (Exception ex)

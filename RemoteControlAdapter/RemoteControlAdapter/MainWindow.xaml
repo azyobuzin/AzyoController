@@ -12,12 +12,12 @@
                 <Grid>
                     <CheckBox x:Name="check" IsChecked="False" Checked="check_Checked" Click="check_Click"></CheckBox>
                     <Grid x:Name="gridMenu" Visibility="Visible">
-                        <Button Content="ネットワーク設定" HorizontalAlignment="Left" Margin="34,15,0,0" VerticalAlignment="Top" Width="104" Click="Button_Click"/>
-                        <TextBlock Text="シリアルポート" FontSize="16" Foreground="Black" Margin="150,17,0,0" />
-                        <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="240,15,0,0" VerticalAlignment="Top" Width="87"/>
-                        <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="330,15,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
-                        <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="390,15,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
-                        <TextBlock HorizontalAlignment="Left" Margin="445,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" />
+                        <Button Content="ネットワーク設定" HorizontalAlignment="Left" Margin="34,15,0,0" VerticalAlignment="Top" Width="110" Click="Button_Click"/>
+                        <TextBlock Text="シリアルポート" FontSize="16" Foreground="Black" Margin="160,17,0,0" />
+                        <ComboBox x:Name="comboPort" ItemsSource="{Binding PortList}" HorizontalAlignment="Left" Margin="250,15,0,0" VerticalAlignment="Top" Width="87"/>
+                        <Button x:Name="btnPortUpdate" Content="更新" HorizontalAlignment="Left" Margin="340,15,0,0" VerticalAlignment="Top" Width="57" Click="btnPortUpdate_Click"/>
+                        <Button x:Name="btnConnectArduino" Content="接続" HorizontalAlignment="Left" Margin="400,15,0,0" VerticalAlignment="Top" Width="57" Click="btnConnectArduino_Click"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="460,6,0,0" TextWrapping="Wrap" Text="{Binding Socket.IpAddress}" VerticalAlignment="Top" FontSize="48" />
                     </Grid>
 
                     <local:CircleSelector x:Name="circleSelector" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Height="768"/>
@@ -59,7 +59,7 @@
 
                                     <CheckBox Grid.Column="1" IsChecked="{Binding IsVoiceSuggest}">おすすめを音声通知</CheckBox>
 
-                                    <TextBlock Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding SuggestedChannel}"
+                                    <TextBlock Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding SuggestedChannels}"
                                                Margin="40,6,0,0" Foreground="Black" FontSize="16" />
                                 </Grid>
                             </DataTemplate>

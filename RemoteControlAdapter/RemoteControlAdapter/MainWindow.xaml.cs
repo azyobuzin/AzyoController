@@ -75,8 +75,8 @@ namespace RemoteControlAdapter
             _viewModel.OnSuggest += force =>
             {
                 var speakText = string.Join(" ", Settings.Instance.Users
-                    .Where(u => u.IsVoiceSuggest && u.SuggestedChannel != null)
-                    .Select(u => string.Format("{0}, how about watching {1}?", u.ScreenName, u.SuggestedChannel.Name)));
+                    .Where(u => u.IsVoiceSuggest && u.SuggestedChannels != null && u.SuggestedChannels.Any())
+                    .Select(u => string.Format("{0}, how about watching {1}?", u.ScreenName, u.SuggestedChannels[0].Channel.Name)));
                 if (!string.IsNullOrWhiteSpace(speakText) || force)
                 {
                     circleSelector.IsSuggest = true;

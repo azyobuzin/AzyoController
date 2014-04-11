@@ -14,8 +14,19 @@ namespace RemoteControlAdapter.ViewModel
 
             this.CompositeDisposable.Add(new PropertyChangedEventListener(this.Model, (sender, e) =>
             {
-                if (new[] { "ScreenName", "ProfileImage", "SuggestedChannel", "IsVoiceSuggest" }.Contains(e.PropertyName))
+                if (new[] { "ScreenName", "ProfileImage", "IsVoiceSuggest" }.Contains(e.PropertyName))
                     this.RaisePropertyChanged(e.PropertyName);
+                switch (e.PropertyName)
+                {
+                    case "ScreenName":
+                    case "ProfileImage":
+                    case "IsVoiceSuggest":
+                        this.RaisePropertyChanged(e.PropertyName);
+                        break;
+                    case "SuggestedChannels":
+                        this.RaisePropertyChanged(() => this.SuggestedChannels);
+                        break;
+                }
             }));
 
             this.AvailableTimes = ViewModelHelper.CreateReadOnlyDispatcherCollection(
@@ -45,12 +56,13 @@ namespace RemoteControlAdapter.ViewModel
 
         public ReadOnlyDispatcherCollection<UserAvailableTime> AvailableTimes { get; private set; }
 
-        public string SuggestedChannel
+        public string SuggestedChannels
         {
             get
             {
-                return this.Model.SuggestedChannel != null
-                    ? string.Format("{0} {1}", this.Model.SuggestedChannel.Number, this.Model.SuggestedChannel.Name)
+                return this.Model.SuggestedChannels != null && this.Model.SuggestedChannels.Any()
+                    ? string.Join("\n", this.Model.SuggestedChannels
+                        .Select(s => string.Format("{0} {1}: {2}", s.Channel.Number, s.Channel.Name, string.Join(", ", s.Words))))
                     : "おすすめを特定できませんでした。おすすめは時間帯やTwitterの利用状況に左右されます。";
             }
         }

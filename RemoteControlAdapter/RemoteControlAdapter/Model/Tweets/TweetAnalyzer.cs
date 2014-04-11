@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CoreTweet;
 using NMeCab;
 
@@ -27,8 +28,15 @@ namespace RemoteControlAdapter.Model.Tweets
                         text = text.Replace(entity.Url.ToString(), "");
             }
 
+            text = text.Replace("RT", "").Replace("QT", "");
+
             return EnumerateNodes(text)
                 .Where(n => n.Feature.Split(',')[0] == "名詞" && !n.Surface.All(IsSpecialUnicode))
+                //精度向上（願望
+                .Where(n => n.Surface.Length > 1
+                    && !n.Surface.ToLower().All(c => "abcdefghijklmnopqrstuvwxyz".Contains(c))
+                    && !(n.Surface.Length < 4 && n.Surface.All(c => "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろをん".Contains(c)))
+                )
                 .GroupBy(n => n.Surface.ToLower())
                 .Select(g => Tuple.Create(g.Key, g.Count()))
                 .Concat(

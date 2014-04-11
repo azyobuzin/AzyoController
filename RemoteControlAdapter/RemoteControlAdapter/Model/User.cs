@@ -8,7 +8,14 @@ namespace RemoteControlAdapter.Model
     {
         public User()
         {
-            this.AvailableTimes = new ObservableCollection<UserAvailableTime>();
+            this.AvailableTimes = new ObservableCollection<UserAvailableTime>(new[]
+            {
+                new UserAvailableTime()
+                {
+                    Start = new Time(0, 0, 0),
+                    End = new Time(0, 0, 0)
+                }
+            });
         }
 
         private string oauthToken;
